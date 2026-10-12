@@ -2434,26 +2434,29 @@ window.CaribCine=(function(){
     $("badges").innerHTML = "";
   }
 
+  /* One roll: pick the aura, play a cutscene if it has one, then reveal it. */
+  function resolveRoll(after) {
+    endCooldown();
+    var hit = pickAura();
+    var finish = function () {
+      var isNew = commit(hit);
+      save();
+      showResult(hit, isNew);
+      renderAll();
+      after();
+    };
+    if (hit.id === CP_ID) { $("aname").textContent = "Something is glitching\u2026"; playCutscene(finish); }
+    else if (hit.id === CARIB_ID) { $("aname").textContent = "The sea goes quiet\u2026"; playCutscene(finish, "carib"); }
+    else finish();
+  }
+
   function roll() {
     if (busy || cooling()) return;
     var dur = getCooldown();
     startCooldown(dur);
     setBusy(true);
     beginShuffle("Rolling\u2026");
-    shuffle(dur, function () {
-      endCooldown();
-      var hit = pickAura();
-      var finish = function () {
-        var isNew = commit(hit);
-        save();
-        showResult(hit, isNew);
-        renderAll();
-        setBusy(false);
-      };
-      if (hit.id === CP_ID) { $("aname").textContent = "Something is glitching\u2026"; playCutscene(finish); }
-      else if (hit.id === CARIB_ID) { $("aname").textContent = "The sea goes quiet\u2026"; playCutscene(finish, "carib"); }
-      else finish();
-    });
+    shuffle(dur, function () { resolveRoll(function () { setBusy(false); }); });
   }
 
   function rollMany(count, label, done) {
@@ -2528,21 +2531,19 @@ window.CaribCine=(function(){
   function startAutoTimer() {
     var fresh = !autoTimer;
     autoTimer = autoTimer || { on: true };
-    $("status").textContent = "Auto rolling. Each burst lands the moment its cooldown ends.";
+    $("status").textContent = "Auto rolling one aura at a time. Each lands the moment its cooldown ends.";
     if (fresh) autoStep();
   }
   function autoStep() {
     if (!autoTimer) return;
     if (busy || cooling()) { setTimeout(autoStep, 150); return; }
-    var cnt = getBurst(), dur = getCooldown();
+    var dur = getCooldown();
     startCooldown(dur);
     setBusy(true);
-    beginShuffle("Auto \u00d7" + cnt + "\u2026");
+    beginShuffle("Auto rolling\u2026");
     shuffle(dur, function () {
-      endCooldown();
-      rollMany(cnt, "Auto \u00d7" + cnt, function () {
+      resolveRoll(function () {
         setBusy(false);
-        renderAll();
         setTimeout(autoStep, 0);
       });
     });
