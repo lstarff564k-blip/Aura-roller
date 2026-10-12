@@ -497,6 +497,62 @@ details.odds summary { color: var(--muted); }
 .cine.carib video { display: none; }
 .foot .grp { display: flex; flex-wrap: wrap; gap: 8px; }
 </style>
+<style>
+/* Profile + trading */
+.badge { display: inline-block; min-width: 18px; padding: 0 5px; border-radius: 99px; background: var(--t6); color: #fff; font-family: var(--font-mono); font-size: 11px; line-height: 18px; text-align: center; vertical-align: middle; }
+.tinput { background: var(--ink-2); color: var(--fg); border: 2px solid var(--line); border-radius: 8px; font: inherit; font-size: 14px; padding: 8px 10px; min-height: 40px; min-width: 0; }
+.tinput:focus-visible { border-color: var(--accent); outline: none; }
+.addslot { border-style: dashed; justify-items: center; align-content: center; min-height: 78px; }
+.addslot .plus { font-size: 30px; line-height: 1; color: var(--accent); font-weight: 800; }
+.addslot:hover { border-color: var(--accent); }
+.profhead { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
+.pname b { font-family: var(--font-display); font-weight: 800; font-size: 24px; letter-spacing: -0.01em; overflow-wrap: anywhere; }
+.ptag { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin-left: 8px; font-weight: 600; }
+.profrow { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+.plist, .tlist { display: grid; gap: 8px; }
+.pcard, .tcard { background: var(--ink-2); border: 2px solid #232f57; border-radius: 12px; padding: 10px 12px; display: grid; gap: 8px; }
+.pcard { grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
+.pcard .pinfo b { font-size: 15px; overflow-wrap: anywhere; }
+.psub { color: var(--muted); font-family: var(--font-mono); font-size: 11px; }
+.pshow { display: flex; gap: 4px; }
+.pmini { background: var(--stage); border: 2px solid #1b2647; border-radius: 8px; width: 40px; height: 40px; display: grid; place-items: center; overflow: hidden; }
+.pmini .orb { --sz: 22px; --k: 0.6; }
+.pbtns { grid-column: 1 / -1; display: flex; gap: 8px; align-items: center; justify-content: flex-end; }
+.thead b { font-size: 15px; overflow-wrap: anywhere; }
+.tline { display: grid; gap: 4px; }
+.tlbl { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.tchips { display: flex; flex-wrap: wrap; gap: 6px; }
+.tchip { --tc: var(--t0); display: inline-flex; align-items: center; gap: 6px; background: var(--stage); border: 2px solid #1b2647; border-left-color: var(--tc); border-radius: 8px; padding: 2px 8px 2px 4px; font-size: 13px; }
+.tchip .orb { --sz: 22px; --k: 0.5; }
+.tnone { color: var(--muted); font-size: 13px; }
+.tbtns { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.tmiss { color: var(--muted); font-size: 12px; }
+.tstat { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; }
+.tstat.ok { color: var(--accent-2); }
+.tstat.no { color: var(--muted); }
+.modal { position: fixed; inset: 0; z-index: 60; background: rgba(3, 5, 15, 0.82); display: grid; place-items: center; padding: 16px; overflow: auto; }
+.modal .box { background: #121a33; border: 2px solid var(--line); border-radius: 14px; padding: 16px; width: min(100%, 520px); max-height: calc(100dvh - 32px); overflow: auto; box-shadow: 0 5px 0 var(--edge); }
+.modal .box.wide { width: min(100%, 760px); }
+.modal h2 { font-family: var(--font-display); font-weight: 800; font-size: 22px; margin: 0 0 10px; overflow-wrap: anywhere; }
+.mbtns { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+.mbtns .alt { min-height: 40px; }
+.mbtns .buy { padding: 10px 16px; font-size: 13px; }
+.comp2 { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 640px) { .comp2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.clist { display: grid; gap: 6px; max-height: 300px; overflow: auto; padding: 2px; align-content: start; }
+.crow { --tc: var(--t0); display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px; align-items: center; background: var(--ink-2); border: 2px solid #232f57; border-left-color: var(--tc); border-radius: 10px; padding: 4px 8px 4px 4px; }
+.crow[hidden] { display: none !important; }
+.crow.on { border-color: var(--accent); border-left-color: var(--accent); background: #16204a; }
+.crow .orb { --sz: 30px; --k: 0.5; }
+.crow .ct b { display: block; font-size: 13px; overflow-wrap: anywhere; line-height: 1.2; }
+.crow .ct span { font-family: var(--font-mono); font-size: 10px; color: var(--muted); }
+.cstep { display: flex; align-items: center; gap: 4px; }
+.cstep button { width: 32px; height: 32px; border-radius: 8px; border: 2px solid var(--line); background: #141c3c; font-size: 16px; line-height: 1; cursor: pointer; }
+.cstep button:hover { border-color: var(--accent); color: var(--accent); }
+.cstep .cnt { min-width: 22px; text-align: center; font-family: var(--font-mono); font-weight: 600; font-size: 13px; }
+.toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 70; max-width: min(92vw, 460px); background: var(--accent); color: var(--accent-fg); border-bottom: 4px solid #b4812a; border-radius: 12px; padding: 10px 16px; font-weight: 700; font-size: 14px; box-shadow: 0 4px 0 var(--edge); }
+@media (max-width: 420px) { .pcard { grid-template-columns: minmax(0, 1fr); } .pshow { order: 2; } }
+</style>
 </head>
 <body>
 <canvas id="bgCanvas" aria-hidden="true"></canvas>
@@ -551,6 +607,8 @@ details.odds summary { color: var(--muted); }
           <button class="tab" id="tabShop" role="tab" aria-selected="false" type="button">Shop</button>
           <button class="tab" id="tabVar" role="tab" aria-selected="false" type="button">Variants</button>
           <button class="tab" id="tabCab" role="tab" aria-selected="false" type="button">Cabinet</button>
+          <button class="tab" id="tabProf" role="tab" aria-selected="false" type="button">Profile</button>
+          <button class="tab" id="tabTrade" role="tab" aria-selected="false" type="button">Trade <span class="badge" id="tradeBadge" hidden>0</span></button>
         </div>
         <div class="coins">🪙 <b id="hdrCoins">0</b></div>
         <div class="tools" id="invTools">
@@ -586,6 +644,49 @@ details.odds summary { color: var(--muted); }
         <div class="cabgrid" id="cabGrid"></div>
       </section>
 
+      <section id="viewProf" hidden>
+        <div class="profhead">
+          <div class="pname"><b id="profName"></b><span class="ptag" id="profTag"></span></div>
+          <button id="profRename" class="chip act" type="button">Change name</button>
+        </div>
+        <div class="case"><canvas id="profCanvas" width="192" height="144" aria-label="Your blocky character wearing your featured aura"></canvas></div>
+        <div class="plate"><b id="profAuraName">Nothing on display</b><span id="profAuraMeta"></span></div>
+        <div class="cabbar" id="profPose">
+          <button class="chip" type="button" data-pose="idle" aria-pressed="true">Idle</button>
+          <button class="chip" type="button" data-pose="power" aria-pressed="false">Power up</button>
+        </div>
+        <div class="stats" style="margin-bottom:14px;">
+          <div class="stat"><b id="profFound">0</b><span>Discovered</span></div>
+          <div class="stat"><b id="profRolls">0</b><span>Rolls</span></div>
+          <div class="stat"><b id="profRarest" style="font-size:13px;">None</b><span>Rarest</span></div>
+        </div>
+        <div class="profrow"><p class="label" style="margin:0;">Showcase (up to 6)</p><button id="profEdit" class="chip act" type="button">Edit showcase</button></div>
+        <p class="shop-info" id="profShowEmpty" hidden>Your showcase is empty. Press Edit showcase and pick the auras you want to show off.</p>
+        <div class="cabgrid" id="profShow" style="max-height:none;margin-bottom:12px;"></div>
+        <div id="profPicker" hidden>
+          <p class="label">Tap auras to add or remove them</p>
+          <p class="shop-info" id="profPickEmpty" hidden>Roll some auras first.</p>
+          <div class="cabgrid" id="profPick"></div>
+        </div>
+        <p class="status" id="profNet" style="margin-top:10px;"></p>
+      </section>
+
+      <section id="viewTrade" hidden>
+        <p class="status" id="tradeNet" style="margin-bottom:10px;"></p>
+        <p class="label">Find players</p>
+        <div class="tools" style="margin-bottom:10px;">
+          <input id="tsearch" class="tinput" type="search" placeholder="Search by name…" autocomplete="off" maxlength="16" aria-label="Search players by name" style="flex:1;min-width:160px;">
+          <button id="tRefresh" class="chip act" type="button">Refresh</button>
+        </div>
+        <div class="plist" id="tresults"></div>
+        <p class="label" style="margin-top:18px;">Requests for you</p>
+        <div class="tlist" id="tIn"></div>
+        <p class="label" style="margin-top:18px;">Your open requests</p>
+        <div class="tlist" id="tOut"></div>
+        <p class="label" style="margin-top:18px;">History</p>
+        <div class="tlist" id="tHist"></div>
+      </section>
+
       <section id="viewShop" hidden>
         <div class="tools" style="margin-bottom:12px;">
           <button id="subLuck" class="chip" type="button" aria-pressed="true">Luck</button>
@@ -608,6 +709,54 @@ details.odds summary { color: var(--muted); }
     <span class="grp">
       <button id="reset" class="reset" type="button">Reset progress</button>
     </span>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<div class="modal" id="nameModal" role="dialog" aria-modal="true" aria-labelledby="nameTitle" hidden>
+  <form class="box" id="nameForm" autocomplete="off">
+    <h2 id="nameTitle">Pick your player name</h2>
+    <p class="shop-info" id="nameLead"></p>
+    <div class="tools">
+      <input id="nameInput" class="tinput" maxlength="16" placeholder="Your name" aria-label="Player name" style="flex:1;min-width:0;">
+      <button id="nameDice" class="chip act" type="button" title="Random cool name">🎲 Random</button>
+    </div>
+    <p class="status" id="nameErr" style="color:var(--t6);"></p>
+    <div class="mbtns"><button id="nameCancel" class="alt" type="button" hidden>Cancel</button><button class="buy" type="submit">Save name</button></div>
+  </form>
+</div>
+
+<div class="modal" id="viewModal" role="dialog" aria-modal="true" aria-labelledby="viewName" hidden>
+  <div class="box">
+    <div class="profhead"><div class="pname"><b id="viewName"></b><span class="ptag" id="viewTag"></span></div></div>
+    <div class="case"><canvas id="viewCanvas" width="192" height="144" aria-label="Their blocky character wearing their featured aura"></canvas></div>
+    <div class="plate"><b id="viewAura"></b><span id="viewAuraMeta"></span></div>
+    <div class="cabbar" id="viewPose">
+      <button class="chip" type="button" data-pose="idle" aria-pressed="true">Idle</button>
+      <button class="chip" type="button" data-pose="power" aria-pressed="false">Power up</button>
+    </div>
+    <div class="stats" style="margin-bottom:12px;">
+      <div class="stat"><b id="viewFound">0</b><span>Discovered</span></div>
+      <div class="stat"><b id="viewRolls">0</b><span>Rolls</span></div>
+      <div class="stat"><b id="viewRarest" style="font-size:13px;">None</b><span>Rarest</span></div>
+    </div>
+    <p class="label">Showcase</p>
+    <div class="cabgrid" id="viewShow" style="max-height:none;"></div>
+    <div class="mbtns"><button id="viewClose" class="alt" type="button">Close</button><button id="viewReq" class="buy" type="button">Request trade</button></div>
+  </div>
+</div>
+
+<div class="modal" id="compModal" role="dialog" aria-modal="true" aria-labelledby="compTitle" hidden>
+  <div class="box wide">
+    <h2 id="compTitle">Trade</h2>
+    <input id="compFilter" class="tinput" type="search" placeholder="Filter auras by name…" aria-label="Filter auras" style="width:100%;margin-bottom:10px;">
+    <div class="comp2">
+      <div><p class="label">You give <span id="compGiveSum"></span></p><div class="clist" id="compGive"></div></div>
+      <div><p class="label">You get <span id="compGetSum"></span></p><div class="clist" id="compGet"></div></div>
+    </div>
+    <p class="status" id="compMsg" style="margin-top:10px;"></p>
+    <div class="mbtns"><button id="compCancel" class="alt" type="button">Close</button><button id="compSend" class="buy" type="button">Send request</button></div>
   </div>
 </div>
 
@@ -1539,7 +1688,7 @@ window.CaribCine=(function(){
   })();
 
   /* ================= Cabinet: blocky character wearing the aura ================= */
-  window.Cabinet = (function () {
+  window.makeCabinet = function (canvasId) {
     var CW = 192, CH = 144, CX = 96, FY = 108;
     var cv = null, g = null, stat = null, glowC = null, glowG = null, gimg = null, g32 = null, tmp = null, tmpG = null;
     var raf = 0, running = false, aura = null, base = null, pose = "idle", lastF = 0, t0 = performance.now(), parts = [], acc = 0, sprites = {};
@@ -1774,7 +1923,7 @@ window.CaribCine=(function(){
       lastF = ts; draw((ts - t0) / 1000, 0.033);
     }
     function init() {
-      cv = document.getElementById("cabCanvas"); if (!cv) return;
+      cv = document.getElementById(canvasId); if (!cv) return;
       g = cv.getContext("2d"); g.imageSmoothingEnabled = false;
       buildStatic();
       glowC = document.createElement("canvas"); glowC.width = CW; glowC.height = CH; glowG = glowC.getContext("2d");
@@ -1798,7 +1947,10 @@ window.CaribCine=(function(){
     function stop() { running = false; cancelAnimationFrame(raf); raf = 0; }
     init();
     return { setAura: setAura, setPose: setPose, start: start, stop: stop };
-  })();
+  };
+  window.Cabinet = window.makeCabinet("cabCanvas");
+  window.ProfCab = window.makeCabinet("profCanvas");
+  window.ViewCab = window.makeCabinet("viewCanvas");
 })();
 
 </script>
@@ -1993,7 +2145,7 @@ window.CaribCine=(function(){
   function sellValue(a) { return Math.max(1, Math.round(Math.pow(a.n, 0.8) * (1 + gearTotal("sell")))); }
 
   var KEY = "aura-roller.v1";
-  function newState() { return { inv: {}, found: {}, rolls: 0, recent: [], coins: 0, shop: {}, gear: {}, autoUnlocked: false }; }
+  function newState() { return { inv: {}, found: {}, rolls: 0, recent: [], coins: 0, shop: {}, gear: {}, autoUnlocked: false, profile: null, escrow: {}, tradeDone: {} }; }
   var state = newState();
   try {
     var saved = JSON.parse(localStorage.getItem(KEY) || "null");
@@ -2004,6 +2156,9 @@ window.CaribCine=(function(){
       state.shop = state.shop || {};
       state.gear = state.gear || {};
       state.autoUnlocked = !!state.autoUnlocked;
+      state.profile = state.profile || null;
+      state.escrow = state.escrow || {};
+      state.tradeDone = state.tradeDone || {};
       if (!state.found) {
         state.found = {};
         Object.keys(state.inv).forEach(function (id) { if (state.inv[id]) state.found[id] = true; });
@@ -2370,7 +2525,7 @@ window.CaribCine=(function(){
     });
   }
 
-  function renderAll() { refreshAutoBtn(); refreshRoll3Btn(); renderStats(); renderRecent(); renderGrid(); updateShop(); if (cabActive) renderCabinet(); }
+  function renderAll() { refreshAutoBtn(); refreshRoll3Btn(); renderStats(); renderRecent(); renderGrid(); updateShop(); if (cabActive) renderCabinet(); onStateChanged(); }
 
   function setBusy(v) {
     busy = v;
@@ -2561,7 +2716,10 @@ window.CaribCine=(function(){
     }
     disarm();
     if (autoTimer) toggleAuto();
+    var keepP = state.profile, keepE = state.escrow, keepD = state.tradeDone;
     state = newState();
+    state.profile = keepP; state.escrow = keepE; state.tradeDone = keepD;
+    if (state.profile) state.profile.display = [];
     save();
     var stage = $("stage");
     stage.classList.remove("hit", "flash", "shuffling");
@@ -2625,17 +2783,16 @@ window.CaribCine=(function(){
 
   function showTab(which) {
     var inv = which === "inv";
-    $("viewInv").hidden = !inv;
-    $("viewShop").hidden = which !== "shop";
-    $("viewVar").hidden = which !== "var";
-    $("viewCab").hidden = which !== "cab";
+    var ids = { inv: "viewInv", shop: "viewShop", var: "viewVar", cab: "viewCab", prof: "viewProf", trade: "viewTrade" };
+    var tabs = { inv: "tabInv", shop: "tabShop", var: "tabVar", cab: "tabCab", prof: "tabProf", trade: "tabTrade" };
+    Object.keys(ids).forEach(function (k) { $(ids[k]).hidden = k !== which; $(tabs[k]).setAttribute("aria-selected", String(k === which)); });
     $("invTools").hidden = !inv;
-    $("tabInv").setAttribute("aria-selected", String(inv));
-    $("tabShop").setAttribute("aria-selected", String(which === "shop"));
-    $("tabVar").setAttribute("aria-selected", String(which === "var"));
-    $("tabCab").setAttribute("aria-selected", String(which === "cab"));
     cabActive = which === "cab";
     if (cabActive) { renderCabinet(); window.Cabinet.start(); } else window.Cabinet.stop();
+    profActive = which === "prof";
+    if (profActive) { renderProfile(); window.ProfCab.start(); } else window.ProfCab.stop();
+    tradeActive = which === "trade";
+    if (tradeActive) { renderNet(); renderTrade(); loadPlayers(false); }
   }
 
   $("roll").addEventListener("click", roll);
@@ -2648,6 +2805,8 @@ window.CaribCine=(function(){
   $("tabShop").addEventListener("click", function () { showTab("shop"); });
   $("tabVar").addEventListener("click", function () { showTab("var"); });
   $("tabCab").addEventListener("click", function () { showTab("cab"); });
+  $("tabProf").addEventListener("click", function () { showTab("prof"); });
+  $("tabTrade").addEventListener("click", function () { showTab("trade"); });
   $("subLuck").addEventListener("click", function () { showShopSub("luck"); });
   $("subGear").addEventListener("click", function () { showShopSub("gear"); });
   function onGridClick(e) {
@@ -2685,6 +2844,620 @@ window.CaribCine=(function(){
   }
   document.addEventListener("pointerdown", warmCine);
   document.addEventListener("keydown", warmCine);
+
+  /* ================= Profile, names and trading ================= */
+  var ADJ = ["Neon", "Cosmic", "Shadow", "Turbo", "Frost", "Solar", "Lunar", "Pixel", "Crimson", "Velvet", "Stormy", "Mystic", "Hyper", "Glitchy", "Golden", "Silent", "Blazing", "Iron", "Arctic", "Savage"];
+  var NOUN = ["Falcon", "Wolf", "Comet", "Phantom", "Samurai", "Dragon", "Ninja", "Ranger", "Viper", "Titan", "Wizard", "Raven", "Golem", "Specter", "Pilot", "Fox", "Knight", "Panda", "Rogue", "Nova"];
+  function randomName() {
+    return ADJ[Math.floor(Math.random() * ADJ.length)] + NOUN[Math.floor(Math.random() * NOUN.length)] + (10 + Math.floor(Math.random() * 90));
+  }
+  function cleanName(s) { return String(s == null ? "" : s).replace(/\s+/g, " ").trim(); }
+  function nameOk(s) { return /^[A-Za-z0-9 _.\-]{3,16}$/.test(s); }
+  function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+  function tagOf(uid) { return "#" + String(uid || "").replace(/[^A-Za-z0-9]/g, "").slice(-4).toUpperCase(); }
+  function ownedList() { return AURAS.filter(function (a) { return (state.inv[a.id] || 0) > 0; }).sort(function (x, y) { return y.n - x.n; }); }
+
+  var toastTimer = null;
+  function toast(msg) {
+    var t = $("toast");
+    t.textContent = msg; t.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.hidden = true; }, 4500);
+  }
+
+  /* ---- bags: { auraId: qty } ---- */
+  function cleanBag(b) {
+    var o = {};
+    if (!b || typeof b !== "object") return o;
+    Object.keys(b).forEach(function (k) {
+      var n = Math.floor(Number(b[k]));
+      if (BY_ID[k] && n > 0 && n <= 9999) o[k] = n;
+    });
+    return o;
+  }
+  function bagEmpty(b) { return Object.keys(b).length === 0; }
+  function hasBag(b) { return Object.keys(b).every(function (k) { return (state.inv[k] || 0) >= b[k]; }); }
+  function missingText(b) {
+    var ks = Object.keys(b);
+    for (var i = 0; i < ks.length; i++) {
+      var have = state.inv[ks[i]] || 0;
+      if (have < b[ks[i]]) return "You need ×" + b[ks[i]] + " " + BY_ID[ks[i]].name + " (you have " + have + ").";
+    }
+    return "";
+  }
+  function takeBag(b) { Object.keys(b).forEach(function (k) { state.inv[k] = Math.max(0, (state.inv[k] || 0) - b[k]); }); }
+  function giveBag(b) { Object.keys(b).forEach(function (k) { state.inv[k] = (state.inv[k] || 0) + b[k]; state.found[k] = true; }); }
+  function bagChips(b) {
+    var box = el("div", "tchips");
+    var ks = Object.keys(b).sort(function (x, y) { return BY_ID[y].n - BY_ID[x].n; });
+    if (!ks.length) { box.appendChild(el("span", "tnone", "nothing")); return box; }
+    ks.forEach(function (k) {
+      var a = BY_ID[k], c = el("span", "tchip");
+      c.style.setProperty("--tc", "var(--t" + a.lvl + ")");
+      c.appendChild(makeOrb(a, { mini: true, still: true }));
+      c.appendChild(el("span", "", "×" + b[k] + " " + a.name));
+      box.appendChild(c);
+    });
+    return box;
+  }
+
+  /* ---- profile ---- */
+  var existing = state.rolls > 0 || state.coins > 0 || Object.keys(state.inv).some(function (k) { return state.inv[k] > 0; });
+  var welcomeName = null;
+  if (!state.profile || !state.profile.name) {
+    if (existing) {
+      state.profile = { name: randomName(), display: ownedList().slice(0, 3).map(function (a) { return a.id; }), auto: true };
+      welcomeName = state.profile.name;
+      save();
+    } else state.profile = null;
+  }
+  state.profile && (state.profile.display = state.profile.display || []);
+  function pruneDisplay() {
+    if (!state.profile) return;
+    state.profile.display = state.profile.display.filter(function (id, i, arr) { return BY_ID[id] && (state.inv[id] || 0) > 0 && arr.indexOf(id) === i; }).slice(0, 6);
+  }
+
+  var nameRequired = false;
+  function openName(required) {
+    nameRequired = required;
+    $("nameModal").hidden = false;
+    $("nameCancel").hidden = required;
+    $("nameTitle").textContent = required ? "Pick your player name" : "Change your name";
+    $("nameLead").textContent = required ? "Other players will see this in trades and search. You can change it later in Profile." : "This is how other players find you.";
+    $("nameInput").value = state.profile ? state.profile.name : "";
+    $("nameErr").textContent = "";
+    setTimeout(function () { $("nameInput").focus(); $("nameInput").select(); }, 30);
+  }
+  function submitName() {
+    var v = cleanName($("nameInput").value);
+    if (!nameOk(v)) { $("nameErr").textContent = "Use 3 to 16 letters, numbers, spaces, _ - or ."; return; }
+    if (!state.profile) state.profile = { name: v, display: [], auto: false };
+    else { state.profile.name = v; state.profile.auto = false; }
+    save();
+    $("nameModal").hidden = true;
+    renderAll();
+    scheduleSync(0);
+    if (net.mode === "online") { players = null; }
+    toast("Welcome, " + v + "!");
+  }
+  $("nameForm").addEventListener("submit", function (e) { e.preventDefault(); submitName(); });
+  $("nameDice").addEventListener("click", function () { $("nameInput").value = randomName(); $("nameErr").textContent = ""; });
+  $("nameCancel").addEventListener("click", function () { if (!nameRequired) $("nameModal").hidden = true; });
+
+  var profActive = false, profSel = null, profEditing = false;
+  function renderProfile() {
+    var p = state.profile;
+    if (!p) return;
+    pruneDisplay();
+    $("profName").textContent = p.name;
+    $("profTag").textContent = net.uid ? tagOf(net.uid) : "";
+    var found = 0, rarest = null;
+    AURAS.forEach(function (a) { if (state.found[a.id]) { found++; if (!rarest || a.n > rarest.n) rarest = a; } });
+    $("profFound").textContent = found + "/" + AURAS.length;
+    $("profRolls").textContent = fmt(state.rolls);
+    $("profRarest").textContent = rarest ? rarest.name : "None";
+    if (!profSel || p.display.indexOf(profSel) < 0) profSel = p.display[0] || null;
+    var a = profSel ? BY_ID[profSel] : null;
+    window.ProfCab.setAura(a);
+    $("profAuraName").textContent = a ? a.name : "Nothing on display";
+    $("profAuraMeta").textContent = a ? (a.rarity !== a.name ? a.rarity + " · " : "") + "1 in " + fmt(a.n) : "Press + to add up to 6 auras.";
+    var grid = $("profShow");
+    grid.innerHTML = "";
+    p.display.forEach(function (id) {
+      var x = BY_ID[id], b = el("button", "cabitem");
+      b.type = "button"; b.dataset.id = id;
+      b.style.setProperty("--tc", "var(--t" + x.lvl + ")");
+      b.setAttribute("aria-pressed", String(id === profSel));
+      b.appendChild(makeOrb(x, { mini: true, still: true }));
+      b.appendChild(el("span", "nm", x.name));
+      grid.appendChild(b);
+    });
+    if (p.display.length < 6) {
+      var plus = el("button", "cabitem addslot");
+      plus.type = "button"; plus.dataset.add = "1"; plus.setAttribute("aria-label", "Add an aura to your showcase");
+      plus.appendChild(el("span", "plus", "+"));
+      plus.appendChild(el("span", "nm", "Add aura"));
+      grid.appendChild(plus);
+    }
+    $("profShowEmpty").hidden = true;
+    $("profEdit").textContent = profEditing ? "Done" : "Edit showcase";
+    $("profPicker").hidden = !profEditing;
+    if (profEditing) {
+      var list = ownedList(), pg = $("profPick");
+      pg.innerHTML = "";
+      $("profPickEmpty").hidden = list.length > 0;
+      list.forEach(function (x) {
+        var b = el("button", "cabitem");
+        b.type = "button"; b.dataset.id = x.id;
+        b.style.setProperty("--tc", "var(--t" + x.lvl + ")");
+        b.setAttribute("aria-pressed", String(p.display.indexOf(x.id) >= 0));
+        b.appendChild(makeOrb(x, { mini: true, still: true }));
+        b.appendChild(el("span", "nm", x.name));
+        b.appendChild(el("span", "qq", "×" + state.inv[x.id]));
+        pg.appendChild(b);
+      });
+    }
+  }
+  $("profShow").addEventListener("click", function (e) {
+    if (e.target.closest("button[data-add]")) {
+      profEditing = true; renderProfile();
+      try { $("profPicker").scrollIntoView({ block: "nearest", behavior: "smooth" }); } catch (err) {}
+      return;
+    }
+    var b = e.target.closest("button[data-id]"); if (!b) return;
+    profSel = b.dataset.id; renderProfile();
+  });
+  $("profEdit").addEventListener("click", function () { profEditing = !profEditing; renderProfile(); });
+  $("profPick").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-id]"); if (!b || !state.profile) return;
+    var d = state.profile.display, i = d.indexOf(b.dataset.id);
+    if (i >= 0) d.splice(i, 1);
+    else if (d.length >= 6) { toast("Your showcase holds up to 6 auras. Remove one first."); return; }
+    else { d.push(b.dataset.id); profSel = b.dataset.id; }
+    save(); renderProfile(); scheduleSync(800);
+  });
+  $("profPose").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-pose]"); if (!b) return;
+    window.ProfCab.setPose(b.dataset.pose);
+    Array.prototype.forEach.call($("profPose").children, function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+  });
+  $("profRename").addEventListener("click", function () { openName(false); });
+
+  /* ---- online hub (shared database) ---- */
+  var net = { db: null, uid: null, write: false, mode: "connecting" };
+  var players = null, playersAt = 0, tOut = {}, tIn = {}, firstIn = false, busyT = {};
+  function sanePlayer(id, v) {
+    if (!v || typeof v !== "object") return null;
+    var disp = Array.isArray(v.display) ? v.display.filter(function (x) { return BY_ID[x]; }).slice(0, 6) : [];
+    return { id: id, name: cleanName(v.name).slice(0, 16) || "Player", display: disp, inv: cleanBag(v.inv), rolls: Math.max(0, Number(v.rolls) || 0), found: Math.max(0, Number(v.found) || 0), rarest: BY_ID[v.rarest] ? v.rarest : "", updatedAt: Number(v.updatedAt) || 0 };
+  }
+  function renderNet() {
+    var msg = "";
+    if (net.mode === "connecting") msg = "Connecting to the trading hub…";
+    else if (net.mode === "offline") msg = "Trading and public profiles only work in the online version of the game, while signed in. Your profile still works here.";
+    else if (!net.write) msg = "You can browse players, but this link is view-only so you can't trade or publish your profile.";
+    else msg = "Online as " + (state.profile ? state.profile.name : "") + " " + tagOf(net.uid) + ". Your name, showcase and collection are visible to other players.";
+    $("tradeNet").textContent = msg;
+    $("profNet").textContent = msg;
+    var on = net.mode === "online";
+    $("tsearch").disabled = !on;
+    $("tRefresh").disabled = !on;
+  }
+  function initNet() {
+    var cl = window.claude;
+    if (!cl || !cl.use) { net.mode = "offline"; renderNet(); return; }
+    Promise.all([cl.use("db"), cl.use("user")]).then(function (r) {
+      var db = r[0], user = r[1];
+      if (!db || !user) { net.mode = "offline"; renderNet(); return; }
+      return Promise.resolve(user.id()).then(function (id) {
+        if (!id) { net.mode = "offline"; renderNet(); return; }
+        return Promise.resolve(user.can ? user.can("data.write") : null).then(function (w) {
+          net.db = db; net.uid = String(id); net.write = w !== false; net.mode = "online";
+          startNet();
+        });
+      });
+    }).catch(function () { net.mode = "offline"; renderNet(); });
+  }
+  function netErr(e) {
+    if (e && e.code === "revoked") { net.mode = "offline"; renderNet(); }
+  }
+  function startNet() {
+    var c = net.db.collection("trades");
+    c.where("fromUid", "==", net.uid).onSnapshot(function (s) { ingest("out", s); }, netErr);
+    c.where("toUid", "==", net.uid).onSnapshot(function (s) { ingest("in", s); }, netErr);
+    renderNet();
+    scheduleSync(0);
+    if (tradeActive) loadPlayers(true);
+    renderProfile();
+  }
+
+  var lastSync = "", syncTimer = null, syncing = false;
+  function profilePayload() {
+    pruneDisplay();
+    var inv = {}, found = 0, rarest = null;
+    AURAS.forEach(function (a) {
+      var n = state.inv[a.id] || 0;
+      if (n > 0) inv[a.id] = n;
+      if (state.found[a.id]) { found++; if (!rarest || a.n > rarest.n) rarest = a; }
+    });
+    var nm = state.profile.name;
+    return { name: nm, nameLower: nm.toLowerCase(), display: state.profile.display.slice(), inv: inv, rolls: state.rolls, found: found, rarest: rarest ? rarest.id : "", updatedAt: 0 };
+  }
+  function scheduleSync(delay) {
+    if (net.mode !== "online" || !net.write || !state.profile) return;
+    clearTimeout(syncTimer);
+    syncTimer = setTimeout(doSync, delay == null ? 5000 : delay);
+  }
+  function doSync() {
+    if (net.mode !== "online" || !net.write || !state.profile) return;
+    if (syncing) { scheduleSync(1500); return; }
+    var p = profilePayload(), key = JSON.stringify(p);
+    if (key === lastSync) return;
+    p.updatedAt = Date.now();
+    syncing = true;
+    var ref;
+    try { ref = net.db.doc("profiles/" + net.uid); } catch (e) { syncing = false; return; }
+    ref.set(p).then(function () { lastSync = key; if (players) players[net.uid] = sanePlayer(net.uid, p); })
+      .catch(function (e) { if (e && e.code === "invalid_argument") { net.write = false; renderNet(); } })
+      .then(function () { syncing = false; });
+  }
+
+  function loadPlayers(force) {
+    if (net.mode !== "online") return Promise.resolve();
+    if (!force && players && Date.now() - playersAt < 20000) { renderResults(); return Promise.resolve(); }
+    $("tresults").setAttribute("aria-busy", "true");
+    return net.db.collection("profiles").limit(1000).get().then(function (snap) {
+      var m = {};
+      snap.docs.forEach(function (d) { var p = sanePlayer(d.id, d.data()); if (p) m[d.id] = p; });
+      players = m; playersAt = Date.now();
+    }).catch(function () { toast("Couldn't load players. Try again."); }).then(function () {
+      $("tresults").removeAttribute("aria-busy");
+      renderResults();
+    });
+  }
+  function renderResults() {
+    var box = $("tresults");
+    box.innerHTML = "";
+    if (net.mode !== "online") return;
+    if (!players) { box.appendChild(el("p", "shop-info", "Loading players…")); return; }
+    var q = cleanName($("tsearch").value).toLowerCase();
+    var list = Object.keys(players).map(function (k) { return players[k]; }).filter(function (p) {
+      return p.id !== net.uid && (!q || p.name.toLowerCase().indexOf(q) >= 0);
+    });
+    list.sort(function (a, b) {
+      var sa = q && a.name.toLowerCase().indexOf(q) === 0 ? 0 : 1, sb = q && b.name.toLowerCase().indexOf(q) === 0 ? 0 : 1;
+      return (sa - sb) || (b.updatedAt - a.updatedAt);
+    });
+    if (!list.length) { box.appendChild(el("p", "shop-info", q ? "No players match \"" + q + "\"." : "No other players yet. Share the game link with a friend.")); return; }
+    list.slice(0, 30).forEach(function (p) {
+      var c = el("div", "pcard");
+      var info = el("div", "pinfo");
+      var nm = el("b", "", p.name); nm.appendChild(el("span", "ptag", tagOf(p.id)));
+      info.appendChild(nm);
+      info.appendChild(el("div", "psub", p.found + " found · " + fmt(p.rolls) + " rolls"));
+      c.appendChild(info);
+      var sh = el("div", "pshow");
+      p.display.slice(0, 4).forEach(function (id) { var li = el("span", "pmini"); li.title = BY_ID[id].name; li.appendChild(makeOrb(BY_ID[id], { mini: true, still: true })); sh.appendChild(li); });
+      c.appendChild(sh);
+      var bt = el("div", "pbtns");
+      var v = el("button", "chip act", "View"); v.type = "button"; v.dataset.act = "view"; v.dataset.id = p.id;
+      var r = el("button", "buy", "Request trade"); r.type = "button"; r.dataset.act = "req"; r.dataset.id = p.id; r.disabled = !net.write;
+      bt.appendChild(v); bt.appendChild(r); c.appendChild(bt);
+      box.appendChild(c);
+    });
+  }
+  $("tresults").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-act]"); if (!b) return;
+    if (b.dataset.act === "view") openPlayer(b.dataset.id); else openCompose(b.dataset.id);
+  });
+  var searchTimer = null;
+  $("tsearch").addEventListener("input", function () { clearTimeout(searchTimer); searchTimer = setTimeout(renderResults, 150); });
+  $("tRefresh").addEventListener("click", function () { loadPlayers(true); });
+
+  /* ---- player profile modal ---- */
+  var viewP = null, viewSel = null;
+  function openPlayer(id) {
+    var p = players && players[id];
+    var go = function (pp) {
+      if (!pp) { toast("That player's profile couldn't be loaded."); return; }
+      viewP = pp;
+      viewSel = pp.display[0] || (function () {
+        var best = null; Object.keys(pp.inv).forEach(function (k) { if (!best || BY_ID[k].n > BY_ID[best].n) best = k; }); return best;
+      })();
+      $("viewModal").hidden = false;
+      renderPlayerModal();
+      window.ViewCab.start();
+    };
+    if (p) { go(p); return; }
+    net.db.doc("profiles/" + id).get().then(function (s) { go(s.exists ? sanePlayer(id, s.data()) : null); }).catch(function () { go(null); });
+  }
+  function renderPlayerModal() {
+    var p = viewP; if (!p) return;
+    $("viewName").textContent = p.name;
+    $("viewTag").textContent = tagOf(p.id);
+    $("viewFound").textContent = p.found + "/" + AURAS.length;
+    $("viewRolls").textContent = fmt(p.rolls);
+    $("viewRarest").textContent = p.rarest ? BY_ID[p.rarest].name : "None";
+    var a = viewSel ? BY_ID[viewSel] : null;
+    window.ViewCab.setAura(a);
+    $("viewAura").textContent = a ? a.name : "Nothing on display";
+    $("viewAuraMeta").textContent = a ? (a.rarity !== a.name ? a.rarity + " · " : "") + "1 in " + fmt(a.n) : "This player hasn't picked a showcase yet.";
+    var g = $("viewShow"); g.innerHTML = "";
+    p.display.forEach(function (id) {
+      var x = BY_ID[id], b = el("button", "cabitem");
+      b.type = "button"; b.dataset.id = id; b.style.setProperty("--tc", "var(--t" + x.lvl + ")");
+      b.setAttribute("aria-pressed", String(id === viewSel));
+      b.appendChild(makeOrb(x, { mini: true, still: true }));
+      b.appendChild(el("span", "nm", x.name));
+      g.appendChild(b);
+    });
+    $("viewReq").disabled = !net.write || p.id === net.uid;
+  }
+  $("viewShow").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-id]"); if (!b) return; viewSel = b.dataset.id; renderPlayerModal();
+  });
+  $("viewPose").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-pose]"); if (!b) return;
+    window.ViewCab.setPose(b.dataset.pose);
+    Array.prototype.forEach.call($("viewPose").children, function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+  });
+  function closePlayer() { $("viewModal").hidden = true; window.ViewCab.stop(); }
+  $("viewClose").addEventListener("click", closePlayer);
+  $("viewReq").addEventListener("click", function () { var id = viewP && viewP.id; closePlayer(); if (id) openCompose(id); });
+
+  /* ---- trade composer ---- */
+  var comp = null;
+  function stepRow(a, max, bag, onChange) {
+    var row = el("div", "crow");
+    row.dataset.name = a.name.toLowerCase();
+    row.style.setProperty("--tc", "var(--t" + a.lvl + ")");
+    row.appendChild(makeOrb(a, { mini: true, still: true }));
+    var t = el("div", "ct"); t.appendChild(el("b", "", a.name)); t.appendChild(el("span", "", a.rarity + " · have ×" + max));
+    row.appendChild(t);
+    var st = el("div", "cstep");
+    var minus = el("button", "", "−"), plus = el("button", "", "+"), cnt = el("span", "cnt", "0");
+    minus.type = plus.type = "button";
+    minus.setAttribute("aria-label", "Remove one " + a.name); plus.setAttribute("aria-label", "Add one " + a.name);
+    function set(n) {
+      n = Math.max(0, Math.min(max, n));
+      if (n) bag[a.id] = n; else delete bag[a.id];
+      cnt.textContent = String(n); row.classList.toggle("on", n > 0);
+      onChange();
+    }
+    minus.addEventListener("click", function () { set((bag[a.id] || 0) - 1); });
+    plus.addEventListener("click", function () { set((bag[a.id] || 0) + 1); });
+    st.appendChild(minus); st.appendChild(cnt); st.appendChild(plus);
+    row.appendChild(st);
+    return row;
+  }
+  function bagSummary(b) {
+    var ks = Object.keys(b), n = 0; ks.forEach(function (k) { n += b[k]; });
+    return n ? n + " aura" + (n === 1 ? "" : "s") : "nothing";
+  }
+  function compUpdate() {
+    $("compGiveSum").textContent = "· " + bagSummary(comp.give);
+    $("compGetSum").textContent = "· " + bagSummary(comp.get);
+    var empty = bagEmpty(comp.give) && bagEmpty(comp.get);
+    $("compSend").disabled = empty || comp.sending;
+    $("compMsg").textContent = empty ? "Pick at least one aura to give or to ask for." : "Your offered auras are held safely until they accept, decline, or you cancel.";
+  }
+  function openCompose(id) {
+    if (net.mode !== "online" || !net.write) { toast("Trading isn't available here."); return; }
+    var p = (players && players[id]) || null;
+    var go = function (pp) {
+      if (!pp) { toast("That player's profile couldn't be loaded."); return; }
+      comp = { to: pp, give: {}, get: {}, sending: false, rows: [] };
+      $("compTitle").textContent = "Trade with " + pp.name + " " + tagOf(pp.id);
+      $("compFilter").value = "";
+      var gl = $("compGive"), tl = $("compGet");
+      gl.innerHTML = ""; tl.innerHTML = "";
+      var mine = ownedList();
+      mine.forEach(function (a) { var r = stepRow(a, state.inv[a.id], comp.give, compUpdate); gl.appendChild(r); });
+      if (!mine.length) gl.appendChild(el("p", "shop-info", "You don't own any auras yet. You can still ask for some."));
+      var theirs = Object.keys(pp.inv).map(function (k) { return BY_ID[k]; }).sort(function (x, y) { return y.n - x.n; });
+      theirs.forEach(function (a) { tl.appendChild(stepRow(a, pp.inv[a.id], comp.get, compUpdate)); });
+      if (!theirs.length) tl.appendChild(el("p", "shop-info", "They don't own any auras yet. You can still gift some."));
+      $("compSend").textContent = "Send request";
+      $("compModal").hidden = false;
+      compUpdate();
+    };
+    if (p) { go(p); return; }
+    net.db.doc("profiles/" + id).get().then(function (s) { go(s.exists ? sanePlayer(id, s.data()) : null); }).catch(function () { go(null); });
+  }
+  $("compFilter").addEventListener("input", function () {
+    var q = cleanName(this.value).toLowerCase();
+    Array.prototype.forEach.call(document.querySelectorAll("#compModal .crow"), function (r) { r.hidden = !!q && r.dataset.name.indexOf(q) < 0; });
+  });
+  function closeCompose() { $("compModal").hidden = true; comp = null; }
+  $("compCancel").addEventListener("click", closeCompose);
+  $("compSend").addEventListener("click", function () {
+    if (!comp || comp.sending) return;
+    var give = cleanBag(comp.give), get = cleanBag(comp.get), to = comp.to;
+    if (bagEmpty(give) && bagEmpty(get)) return;
+    if (to.id === net.uid) return;
+    var pend = Object.keys(tOut).filter(function (k) { return tOut[k].status === "pending"; }).length;
+    if (pend >= 10) { $("compMsg").textContent = "You have 10 open requests. Cancel one first."; return; }
+    if (!hasBag(give)) { $("compMsg").textContent = missingText(give); return; }
+    var id = "t" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+    var doc = { fromUid: net.uid, fromName: state.profile.name, toUid: to.id, toName: to.name, offer: give, want: get, status: "pending", createdAt: Date.now(), updatedAt: Date.now() };
+    comp.sending = true; $("compSend").disabled = true; $("compSend").textContent = "Sending…";
+    takeBag(give); state.escrow[id] = { offer: give, want: get, to: to.id }; save(); renderAll();
+    var ref;
+    try { ref = net.db.collection("trades").doc(id); } catch (e) { ref = null; }
+    var fail = function () {
+      giveBag(give); delete state.escrow[id]; save(); renderAll();
+      if (comp) { comp.sending = false; $("compSend").textContent = "Send request"; compUpdate(); $("compMsg").textContent = "Couldn't send the request. Nothing was lost. Try again."; }
+    };
+    if (!ref) { fail(); return; }
+    ref.set(doc).then(function () {
+      closeCompose();
+      toast("Request sent to " + to.name + ".");
+      tOut[id] = normTrade(id, doc);
+      renderTrade();
+    }).catch(fail);
+  });
+
+  /* ---- trades ---- */
+  function normTrade(id, v) {
+    if (!v || typeof v !== "object") return null;
+    var st = ["pending", "accepted", "declined", "cancelled", "completed"].indexOf(v.status) >= 0 ? v.status : "cancelled";
+    return { id: id, fromUid: String(v.fromUid || ""), fromName: cleanName(v.fromName).slice(0, 16) || "Player", toUid: String(v.toUid || ""), toName: cleanName(v.toName).slice(0, 16) || "Player", offer: cleanBag(v.offer), want: cleanBag(v.want), status: st, createdAt: Number(v.createdAt) || 0, updatedAt: Number(v.updatedAt) || 0 };
+  }
+  function ingest(kind, snap) {
+    var m = {};
+    snap.docs.forEach(function (d) { var t = normTrade(d.id, d.data()); if (t) m[d.id] = t; });
+    if (kind === "in") {
+      if (firstIn) Object.keys(m).forEach(function (id) { if (!tIn[id] && m[id].status === "pending") toast("New trade request from " + m[id].fromName + "!"); });
+      tIn = m; firstIn = true;
+    } else tOut = m;
+    settle();
+    renderTrade();
+  }
+  /* Sender side: items were held in escrow when the request was sent. Resolve them from the local record, once. */
+  function settle() {
+    var changed = false, msgs = [];
+    Object.keys(state.escrow).forEach(function (id) {
+      var rec = state.escrow[id], t = tOut[id];
+      if (!t || t.status === "pending" || t.fromUid !== net.uid) return;
+      if (t.status === "accepted" || t.status === "completed") {
+        giveBag(cleanBag(rec.want)); msgs.push(t.toName + " accepted your trade!");
+      } else {
+        giveBag(cleanBag(rec.offer)); msgs.push(t.toName + " " + t.status + " your request. Your auras are back.");
+      }
+      delete state.escrow[id]; changed = true;
+      if (t.status === "accepted" && net.write) { try { net.db.doc("trades/" + id).update({ status: "completed", updatedAt: Date.now() }).catch(function () {}); } catch (e) {} }
+    });
+    if (changed) { save(); renderAll(); toast(msgs[0] + (msgs.length > 1 ? " (+" + (msgs.length - 1) + " more)" : "")); }
+  }
+  /* Lease the trade doc so accept / decline / cancel can't race each other, then act only if it is still pending. */
+  function withPending(id, check, act) {
+    var ref = net.db.doc("trades/" + id);
+    return ref.acquire({ holder: net.uid, ttlMs: 10000 }).then(function (l) {
+      if (!l.acquired) { toast("That request is being updated. Try again in a moment."); return false; }
+      return ref.get().then(function (s) {
+        var cur = s.exists ? s.data() : null;
+        if (!cur || cur.status !== "pending") { toast("That request is no longer open."); return false; }
+        if (!check(cur)) { toast("That request changed. Refresh and look again."); return false; }
+        return act(ref, cur);
+      });
+    });
+  }
+  function bagKey(b) { return JSON.stringify(Object.keys(b).sort().map(function (k) { return [k, b[k]]; })); }
+  function acceptTrade(t) {
+    if (busyT[t.id] || state.tradeDone[t.id]) return;
+    if (!net.write) return;
+    if (!hasBag(t.want)) { toast(missingText(t.want)); return; }
+    busyT[t.id] = true; renderTrade();
+    withPending(t.id, function (cur) {
+      return cur.toUid === net.uid && bagKey(cleanBag(cur.offer)) === bagKey(t.offer) && bagKey(cleanBag(cur.want)) === bagKey(t.want);
+    }, function (ref) {
+      if (!hasBag(t.want)) { toast(missingText(t.want)); return false; }
+      takeBag(t.want); giveBag(t.offer); state.tradeDone[t.id] = true; save(); renderAll();
+      return ref.update({ status: "accepted", updatedAt: Date.now() }).then(function () {
+        toast("Trade complete with " + t.fromName + "!");
+        t.status = "accepted"; tIn[t.id] = t; return true;
+      }).catch(function () {
+        takeBag(t.offer); giveBag(t.want); delete state.tradeDone[t.id]; save(); renderAll();
+        toast("The trade couldn't be completed. Nothing changed.");
+        return false;
+      });
+    }).catch(function () { toast("Something went wrong. Try again."); }).then(function () { delete busyT[t.id]; renderTrade(); });
+  }
+  function closeTrade(t, status, who) {
+    if (busyT[t.id]) return;
+    busyT[t.id] = true; renderTrade();
+    withPending(t.id, function (cur) { return who === "to" ? cur.toUid === net.uid : cur.fromUid === net.uid; }, function (ref) {
+      return ref.update({ status: status, updatedAt: Date.now() }).then(function () {
+        t.status = status;
+        if (who === "from") { tOut[t.id] = t; settle(); } else tIn[t.id] = t;
+        return true;
+      });
+    }).catch(function () { toast("Something went wrong. Try again."); }).then(function () { delete busyT[t.id]; renderTrade(); });
+  }
+
+  function tradeCard(t, role) {
+    var c = el("div", "tcard");
+    var head = el("div", "thead");
+    if (role === "in") head.appendChild(el("b", "", t.fromName + " " + tagOf(t.fromUid)));
+    else head.appendChild(el("b", "", "To " + t.toName + " " + tagOf(t.toUid)));
+    c.appendChild(head);
+    var gives = role === "in" ? t.offer : t.offer, gets = t.want;
+    var l1 = el("div", "tline"); l1.appendChild(el("span", "tlbl", role === "in" ? "They give you" : "You give")); l1.appendChild(bagChips(gives)); c.appendChild(l1);
+    var l2 = el("div", "tline"); l2.appendChild(el("span", "tlbl", role === "in" ? "They want from you" : "You get")); l2.appendChild(bagChips(gets)); c.appendChild(l2);
+    if (t.status === "pending") {
+      var bt = el("div", "tbtns");
+      var busy = !!busyT[t.id];
+      if (role === "in") {
+        var miss = hasBag(t.want) ? "" : missingText(t.want);
+        var ac = el("button", "buy", busy ? "Working…" : "Accept"); ac.type = "button"; ac.disabled = busy || !!miss || !net.write; ac.dataset.act = "accept"; ac.dataset.id = t.id;
+        var dc = el("button", "chip act", "Decline"); dc.type = "button"; dc.disabled = busy || !net.write; dc.dataset.act = "decline"; dc.dataset.id = t.id;
+        bt.appendChild(ac); bt.appendChild(dc);
+        if (miss) bt.appendChild(el("span", "tmiss", miss));
+      } else {
+        var cn = el("button", "chip act", busy ? "Working…" : "Cancel request"); cn.type = "button"; cn.disabled = busy; cn.dataset.act = "cancel"; cn.dataset.id = t.id;
+        bt.appendChild(cn);
+        bt.appendChild(el("span", "tmiss", "Waiting for " + t.toName + ". Your offer is held safely."));
+      }
+      c.appendChild(bt);
+    } else {
+      var lab = t.status === "accepted" || t.status === "completed" ? "Completed" : t.status === "declined" ? "Declined" : "Cancelled";
+      c.appendChild(el("div", "tstat " + (lab === "Completed" ? "ok" : "no"), lab));
+    }
+    return c;
+  }
+  var tradeActive = false;
+  function renderTrade() {
+    if (!tradeActive) { updateBadge(); return; }
+    var all = [];
+    Object.keys(tIn).forEach(function (k) { all.push({ t: tIn[k], role: "in" }); });
+    Object.keys(tOut).forEach(function (k) { if (!tIn[k]) all.push({ t: tOut[k], role: "out" }); });
+    var inbox = all.filter(function (x) { return x.role === "in" && x.t.status === "pending"; });
+    var sent = all.filter(function (x) { return x.role === "out" && x.t.status === "pending"; });
+    var hist = all.filter(function (x) { return x.t.status !== "pending"; });
+    [inbox, sent, hist].forEach(function (a) { a.sort(function (x, y) { return y.t.updatedAt - x.t.updatedAt; }); });
+    function fill(id, list, emptyMsg) {
+      var box = $(id); box.innerHTML = "";
+      if (!list.length) { box.appendChild(el("p", "shop-info", emptyMsg)); return; }
+      list.slice(0, 12).forEach(function (x) { box.appendChild(tradeCard(x.t, x.role)); });
+    }
+    fill("tIn", inbox, "No requests right now.");
+    fill("tOut", sent, "You haven't sent any open requests.");
+    fill("tHist", hist, "Finished trades will show up here.");
+    updateBadge();
+  }
+  function updateBadge() {
+    var n = Object.keys(tIn).filter(function (k) { return tIn[k].status === "pending"; }).length;
+    var b = $("tradeBadge"); b.hidden = n === 0; b.textContent = String(n);
+  }
+  function onTradeClick(e) {
+    var b = e.target.closest("button[data-act]"); if (!b) return;
+    var id = b.dataset.id, act = b.dataset.act;
+    if (act === "accept" && tIn[id]) acceptTrade(tIn[id]);
+    else if (act === "decline" && tIn[id]) closeTrade(tIn[id], "declined", "to");
+    else if (act === "cancel" && tOut[id]) closeTrade(tOut[id], "cancelled", "from");
+  }
+  $("tIn").addEventListener("click", onTradeClick);
+  $("tOut").addEventListener("click", onTradeClick);
+
+  function onStateChanged() {
+    scheduleSync();
+    if (profActive) renderProfile();
+    if (tradeActive) renderTrade();
+  }
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Escape") return;
+    if (!$("compModal").hidden) closeCompose();
+    else if (!$("viewModal").hidden) closePlayer();
+    else if (!$("nameModal").hidden && !nameRequired) $("nameModal").hidden = true;
+  });
+  [["compModal", closeCompose], ["viewModal", closePlayer]].forEach(function (p) {
+    $(p[0]).addEventListener("pointerdown", function (e) { if (e.target === this) p[1](); });
+  });
+
+  if (!state.profile) openName(true);
+  else if (welcomeName) setTimeout(function () { toast("Welcome back! You've been given the name " + welcomeName + ". Change it any time in Profile."); }, 600);
+  initNet();
 
   buildShop();
   renderOdds();
