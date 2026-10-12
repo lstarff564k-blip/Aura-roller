@@ -518,8 +518,18 @@ select { background: rgba(255, 255, 255, 0.06); border-color: var(--line); borde
       </section>
 
       <section id="viewShop" hidden>
-        <p class="shop-info">Luck multiplies the chance of every aura rarer than 1 in 40. Purchases stack. <span>Your luck: <b id="shopLuck">×1</b></span> <span>Coins: <b id="shopCoins">🪙 0</b></span></p>
-        <div class="shop" id="shop"></div>
+        <div class="tools" style="margin-bottom:12px;">
+          <button id="subLuck" class="chip" type="button" aria-pressed="true">Luck</button>
+          <button id="subGear" class="chip" type="button" aria-pressed="false">Gears</button>
+        </div>
+        <div id="shopLuckPane">
+          <p class="shop-info">Luck multiplies the chance of every aura rarer than 1 in 40. Purchases stack. <span>Your luck: <b id="shopLuck">×1</b></span> <span>Coins: <b id="shopCoins">🪙 0</b></span></p>
+          <div class="shop" id="shop"></div>
+        </div>
+        <div id="shopGearPane" hidden>
+          <p class="shop-info">Gears give perks other than luck. They stack with each other. <span>Cooldown: <b id="gearCd"></b></span> <span>Sell bonus: <b id="gearSell"></b></span> <span>Per roll: <b id="gearPass"></b></span></p>
+          <div class="shop" id="gearList"></div>
+        </div>
       </section>
     </main>
   </div>
@@ -628,13 +638,45 @@ select { background: rgba(255, 255, 255, 0.06); border-color: var(--line); borde
     ["Cursed Anubis", "⚰️", 18000000, "Cursed Anubis", 7, ["#c8ffa0", "#6a8a10", "#0a1400"], "regal"],
     ["Eclipsed Solar Flare", "🌚", 14000000, "Eclipsed Solar Flare", 7, ["#ffe090", "#ff6a00", "#0a0008"], "regal"],
     ["Frozen Heat Death", "🧊", 55000000, "Frozen Heat Death", 7, ["#ffffff", "#80e0ff", "#0a2a5a"], "regal prism"],
-    ["Celestial Quicksilver", "🪞", 45000000, "Celestial Quicksilver", 7, ["#ffffff", "#b0c0ff", "#ffd0f0"], "regal"]
+    ["Celestial Quicksilver", "🪞", 45000000, "Celestial Quicksilver", 7, ["#ffffff", "#b0c0ff", "#ffd0f0"], "regal"],
+    ["Caribbean", "🏝️", 9000, "Caribbean", 3, ["#c8fff4", "#1ac8c0", "#05405a"]],
+    ["Pebble", "⚪", 6, "Humble", 0, ["#f0f0f0", "#a8a8b0", "#3a3a42"]],
+    ["Breeze", "🍂", 11, "Gentle", 0, ["#ffe6b8", "#d0883a", "#4a2a0a"]],
+    ["Lantern", "🏮", 35, "Glowing", 0, ["#ffe8a8", "#e8602a", "#4a1008"]],
+    ["Amber", "🍯", 90, "Preserved", 1, ["#fff0b0", "#e8a01a", "#5a3000"]],
+    ["Cobalt", "🔵", 170, "Deep", 1, ["#c8dcff", "#2a58d0", "#081a50"]],
+    ["Stormbound", "⛈️", 600, "Thunderous", 1, ["#d8e4ff", "#5a6ac0", "#10143a"]],
+    ["Sundial", "🕰️", 1400, "Timeworn", 2, ["#fff4d0", "#c8a24a", "#4a3410"]],
+    ["Oracle", "🔮", 5500, "Prophetic", 2, ["#f0d8ff", "#9a4ae0", "#26085a"]],
+    ["Minotaur", "🐂", 14000, "Labyrinthine", 3, ["#ffd8c0", "#9a4a2a", "#2a1008"]],
+    ["Medusa", "🗿", 24000, "Stonegazing", 3, ["#d8ffd0", "#5a8a5a", "#102a14"]],
+    ["Divide By Zero", "➗", 120000, "Undefined", 4, ["#ffffff", "#ff3a3a", "#0a0a1a"], "glitch"],
+    ["Heap Corruption", "🧬", 200000, "Mangled", 4, ["#b8ffa8", "#ff3ad0", "#1a0a1a"], "glitch"],
+    ["Neutron Star", "⭐", 650000, "Collapsed", 5, ["#e8f4ff", "#6ab0ff", "#050a2a"]],
+    ["Singularity Bloom", "🌺", 1800000, "Blooming", 6, ["#ffffff", "#ff7ab8", "#1a0a2a"], "prism"],
+    ["Genesis Prime", "🔆", 60000000, "Foundational", 7, ["#ffffff", "#ffd89a", "#3a1a5a"], "regal"],
+    ["Molten Zeus", "🔥", 35000000, "Molten Zeus", 7, ["#fff0b0", "#ff5a1a", "#2a0800"], "regal"],
+    ["Voidborn Odin", "🕶️", 48000000, "Voidborn Odin", 7, ["#c8b8ff", "#3a1a8a", "#000008"], "regal"],
+    ["Radiant Event Horizon", "🌞", 28000000, "Radiant Event Horizon", 7, ["#ffffff", "#ffb03a", "#4a1a7a"], "regal"],
+    ["Gilded Supernova", "🏅", 16000000, "Gilded Supernova", 7, ["#fffbe0", "#f5c000", "#4a2a00"], "regal"],
+    ["Fractured Aurora", "🪟", 12000000, "Fractured Aurora", 7, ["#a8ffe8", "#ff5ad8", "#0a1a3a"], "regal prism"],
+    ["Bloodied Hades", "🩻", 24000000, "Bloodied Hades", 7, ["#ffb8c8", "#a0102a", "#1a0008"], "regal"],
+    ["Overclocked Omega", "🚀", 150000000, "Overclocked Omega", 7, ["#ffffff", "#3affff", "#ff3a8a"], "regal glitch"],
+    ["Neon Spectrum", "💠", 38000000, "Neon Spectrum", 7, ["#ffffff", "#3aff9a", "#ff3aff"], "regal prism"],
+    ["Hollow Nebula", "🫧", 11000000, "Hollow Nebula", 7, ["#e8d8ff", "#6a4ac8", "#050010"], "regal"],
+    ["Ruined Big Bang", "🧨", 70000000, "Ruined Big Bang", 7, ["#ffffff", "#ff6a3a", "#1a0a0a"], "regal glitch"],
+    ["Eclipsed Ra", "🌘", 20000000, "Eclipsed Ra", 7, ["#ffe8a0", "#c86a00", "#0a0508"], "regal"],
+    ["Corrupted Blue Screen", "📟", 26000000, "Corrupted Blue Screen", 7, ["#ffffff", "#2a5aff", "#2a0030"], "regal glitch"],
+    ["Petrified Archangel", "🗽", 85000000, "Petrified Archangel", 7, ["#e8e8f0", "#7a8098", "#10121a"], "regal"],
+    ["Inverted Godhead", "🔃", 160000000, "Inverted Godhead", 7, ["#2a1a40", "#ffd8a0", "#ffffff"], "regal"],
+    ["Void Apotheosis", "🌌", 250000000, "Void Apotheosis", 7, ["#d8c8ff", "#6a3ae8", "#000000"], "regal prism"],
+    ["Caribbean Express", "🚂", 32000000, "Caribbean Express", 7, ["#ffffff", "#20e8d0", "#ff8a3a"], "regal prism"]
   ];
   var AURAS = RAW.map(function (r) {
     return { id: r[0].toLowerCase().replace(/[^a-z]+/g, "-"), name: r[0], e: r[1], n: r[2], rarity: r[3], lvl: r[4], c: r[5], fx: r[6] || "" };
   });
   var VARIANT_IDS = {};
-  ["chromatic-pixelation", "oblivion-genesis", "inverted-omega", "crimson-imperator", "shattered-time-collapse", "corrupted-kernel-panic", "abyssal-poseidon", "cursed-anubis", "eclipsed-solar-flare", "frozen-heat-death", "celestial-quicksilver"].forEach(function (id) { VARIANT_IDS[id] = true; });
+  ["chromatic-pixelation", "oblivion-genesis", "inverted-omega", "crimson-imperator", "shattered-time-collapse", "corrupted-kernel-panic", "abyssal-poseidon", "cursed-anubis", "eclipsed-solar-flare", "frozen-heat-death", "celestial-quicksilver", "molten-zeus", "voidborn-odin", "radiant-event-horizon", "gilded-supernova", "fractured-aurora", "bloodied-hades", "overclocked-omega", "neon-spectrum", "hollow-nebula", "ruined-big-bang", "eclipsed-ra", "corrupted-blue-screen", "petrified-archangel", "inverted-godhead", "void-apotheosis", "caribbean-express"].forEach(function (id) { VARIANT_IDS[id] = true; });
   AURAS.forEach(function (a) { a.v = !!VARIANT_IDS[a.id]; });
   var BY_ID = {};
   AURAS.forEach(function (a) { BY_ID[a.id] = a; });
@@ -651,10 +693,45 @@ select { background: rgba(255, 255, 255, 0.06); border-color: var(--line); borde
     { id: "casino", name: "Casino Factory", e: "🏭", mult: 15, cost: 1000000, d: "An assembly line that manufactures jackpots around the clock." }
   ];
 
-  function sellValue(a) { return Math.max(1, Math.round(Math.pow(a.n, 0.8))); }
+
+  // Gears: one-time purchases with non-luck perks. kind: cd (roll cooldown x), sell (sell value +), burst (extra rolls in the multi-roll), cheap (multi-roll cost x), pass (coins per roll)
+  var GEARS = [
+    { id: "sandals", name: "Swift Sandals", e: "👟", kind: "cd", val: 0.9, cost: 1000, d: "Roll cooldown -10%." },
+    { id: "hourglass", name: "Sped-Up Hourglass", e: "⏳", kind: "cd", val: 0.85, cost: 8000, d: "Roll cooldown -15% more." },
+    { id: "chrono", name: "Chrono Gauntlet", e: "🥊", kind: "cd", val: 0.75, cost: 80000, d: "Roll cooldown -25% more." },
+    { id: "pouch", name: "Coin Pouch", e: "👛", kind: "sell", val: 0.1, cost: 1600, d: "Auras sell for 10% more." },
+    { id: "ledger", name: "Golden Ledger", e: "📒", kind: "sell", val: 0.25, cost: 16000, d: "Auras sell for 25% more." },
+    { id: "midas", name: "Midas Gauntlet", e: "🧤", kind: "sell", val: 0.5, cost: 160000, d: "Everything you touch sells for 50% more." },
+    { id: "coupon", name: "Bulk Coupon", e: "🎟️", kind: "cheap", val: 0.5, cost: 3000, d: "The multi-roll costs half as much." },
+    { id: "twin", name: "Twin Lens", e: "🔍", kind: "burst", val: 2, cost: 12000, d: "Multi-roll rolls 2 extra auras." },
+    { id: "prism", name: "Prism Lens", e: "🔭", kind: "burst", val: 3, cost: 140000, d: "Multi-roll rolls 3 more extra auras." },
+    { id: "piggy", name: "Piggy Bank", e: "🐷", kind: "pass", val: 2, cost: 5000, d: "Earn 🪙2 on every aura you roll." },
+    { id: "mint", name: "Mint Press", e: "🏦", kind: "pass", val: 25, cost: 300000, d: "Earn 🪙25 more on every aura you roll." }
+  ];
+  function gearTotal(kind, mode) {
+    var v = mode === "mul" ? 1 : 0;
+    GEARS.forEach(function (g) {
+      if (g.kind !== kind || !state.gear[g.id]) return;
+      if (mode === "mul") v *= g.val; else v += g.val;
+    });
+    return v;
+  }
+  function getCooldown() { return Math.max(600, Math.round(COOLDOWN * gearTotal("cd", "mul"))); }
+  function getBurst() { return 5 + gearTotal("burst"); }
+  function getBurstCost() { return Math.max(1, Math.round(ROLL3_COST * gearTotal("cheap", "mul"))); }
+  function getPassive() { return gearTotal("pass"); }
+  function gearLabel(g) {
+    if (g.kind === "cd") return "-" + Math.round((1 - g.val) * 100) + "% cooldown";
+    if (g.kind === "sell") return "+" + Math.round(g.val * 100) + "% sell value";
+    if (g.kind === "cheap") return "multi-roll " + Math.round((1 - g.val) * 100) + "% off";
+    if (g.kind === "burst") return "+" + g.val + " multi-roll auras";
+    return "+\ud83e\ude99" + g.val + " per roll";
+  }
+
+  function sellValue(a) { return Math.max(1, Math.round(Math.pow(a.n, 0.8) * (1 + gearTotal("sell")))); }
 
   var KEY = "aura-roller.v1";
-  function newState() { return { inv: {}, found: {}, rolls: 0, recent: [], coins: 0, shop: {}, autoUnlocked: false }; }
+  function newState() { return { inv: {}, found: {}, rolls: 0, recent: [], coins: 0, shop: {}, gear: {}, autoUnlocked: false }; }
   var state = newState();
   try {
     var saved = JSON.parse(localStorage.getItem(KEY) || "null");
@@ -663,6 +740,7 @@ select { background: rgba(255, 255, 255, 0.06); border-color: var(--line); borde
       state.recent = state.recent || [];
       state.coins = state.coins || 0;
       state.shop = state.shop || {};
+      state.gear = state.gear || {};
       state.autoUnlocked = !!state.autoUnlocked;
       if (!state.found) {
         state.found = {};
@@ -687,9 +765,12 @@ select { background: rgba(255, 255, 255, 0.06); border-color: var(--line); borde
     if (!cd && cdTimer) { clearInterval(cdTimer); cdTimer = null; }
   }
   function startCooldown() {
-    cdUntil = Date.now() + COOLDOWN;
+    cdUntil = Date.now() + getCooldown();
     if (!cdTimer) cdTimer = setInterval(refreshRollBtns, 100);
     refreshRollBtns();
+  }
+  function refreshRoll3Btn() {
+    setText($("roll3"), "\u00d7" + getBurst() + " \ud83e\ude99" + fmt(getBurstCost()));
   }
   function refreshAutoBtn() {
     var b = $("auto");
@@ -723,6 +804,7 @@ select { background: rgba(255, 255, 255, 0.06); border-color: var(--line); borde
     state.found[a.id] = true;
     state.inv[a.id] = (state.inv[a.id] || 0) + 1;
     state.rolls++;
+    state.coins += getPassive();
     state.recent.unshift(a.id);
     state.recent = state.recent.slice(0, 12);
     return isNew;
@@ -941,34 +1023,42 @@ select { background: rgba(255, 255, 255, 0.06); border-color: var(--line); borde
   }
 
   /* Shop */
-  var shopRows = {};
+  var shopRows = {}, gearRows = {};
+  function buildRow(box, rows, s, tagText, onBuy) {
+    var row = document.createElement("div");
+    row.className = "item";
+    var ic = document.createElement("div"); ic.className = "ic"; ic.textContent = s.e;
+    var t = document.createElement("div"); t.className = "t";
+    var nm = document.createElement("b"); nm.textContent = s.name;
+    var mu = document.createElement("span"); mu.className = "mult"; mu.textContent = tagText;
+    var ds = document.createElement("div"); ds.className = "d"; ds.textContent = s.d;
+    t.appendChild(nm); t.appendChild(mu); t.appendChild(ds);
+    var btn = document.createElement("button");
+    btn.type = "button"; btn.className = "buy";
+    btn.addEventListener("click", function () { onBuy(s); });
+    row.appendChild(ic); row.appendChild(t); row.appendChild(btn);
+    box.appendChild(row);
+    rows[s.id] = { row: row, btn: btn };
+  }
   function buildShop() {
-    var box = $("shop");
-    SHOP.forEach(function (s) {
-      var row = document.createElement("div");
-      row.className = "item";
-      var ic = document.createElement("div"); ic.className = "ic"; ic.textContent = s.e;
-      var t = document.createElement("div"); t.className = "t";
-      var nm = document.createElement("b"); nm.textContent = s.name;
-      var mu = document.createElement("span"); mu.className = "mult"; mu.textContent = "×" + s.mult + " luck";
-      var ds = document.createElement("div"); ds.className = "d"; ds.textContent = s.d;
-      t.appendChild(nm); t.appendChild(mu); t.appendChild(ds);
-      var btn = document.createElement("button");
-      btn.type = "button"; btn.className = "buy";
-      btn.addEventListener("click", function () { buy(s); });
-      row.appendChild(ic); row.appendChild(t); row.appendChild(btn);
-      box.appendChild(row);
-      shopRows[s.id] = { row: row, btn: btn };
+    SHOP.forEach(function (s) { buildRow($("shop"), shopRows, s, "×" + s.mult + " luck", buy); });
+    GEARS.forEach(function (g) { buildRow($("gearList"), gearRows, g, gearLabel(g), buyGear); });
+  }
+  function paintRows(list, rows, owned) {
+    list.forEach(function (s) {
+      var r = rows[s.id];
+      var o = !!owned[s.id];
+      r.row.classList.toggle("owned", o);
+      if (o) { r.btn.textContent = "Owned"; r.btn.disabled = true; }
+      else { r.btn.textContent = "Buy 🪙 " + fmt(s.cost); r.btn.disabled = state.coins < s.cost; }
     });
   }
   function updateShop() {
-    SHOP.forEach(function (s) {
-      var r = shopRows[s.id];
-      var owned = !!state.shop[s.id];
-      r.row.classList.toggle("owned", owned);
-      if (owned) { r.btn.textContent = "Owned"; r.btn.disabled = true; }
-      else { r.btn.textContent = "Buy 🪙 " + fmt(s.cost); r.btn.disabled = state.coins < s.cost; }
-    });
+    paintRows(SHOP, shopRows, state.shop);
+    paintRows(GEARS, gearRows, state.gear);
+    $("gearCd").textContent = (getCooldown() / 1000).toFixed(2) + "s";
+    $("gearSell").textContent = "+" + Math.round(gearTotal("sell") * 100) + "%";
+    $("gearPass").textContent = "🪙" + getPassive();
   }
   function buy(s) {
     if (state.shop[s.id] || state.coins < s.cost) return;
@@ -977,6 +1067,22 @@ select { background: rgba(255, 255, 255, 0.06); border-color: var(--line); borde
     save();
     say("Bought " + s.name + ". Luck is now " + fmtLuck(getLuck()) + ".");
     renderAll();
+  }
+  function buyGear(g) {
+    if (state.gear[g.id] || state.coins < g.cost) return;
+    state.coins -= g.cost;
+    state.gear[g.id] = true;
+    save();
+    say("Bought " + g.name + " (" + gearLabel(g) + ").");
+    if (autoTimer) startAutoTimer();
+    renderAll();
+  }
+  function showShopSub(which) {
+    var g = which === "gear";
+    $("shopLuckPane").hidden = g;
+    $("shopGearPane").hidden = !g;
+    $("subLuck").setAttribute("aria-pressed", String(!g));
+    $("subGear").setAttribute("aria-pressed", String(g));
   }
 
   function renderOdds() {
@@ -997,7 +1103,7 @@ select { background: rgba(255, 255, 255, 0.06); border-color: var(--line); borde
     });
   }
 
-  function renderAll() { refreshAutoBtn(); renderStats(); renderRecent(); renderGrid(); updateShop(); }
+  function renderAll() { refreshAutoBtn(); refreshRoll3Btn(); renderStats(); renderRecent(); renderGrid(); updateShop(); }
 
   function setBusy(v) {
     busy = v;
@@ -1048,11 +1154,12 @@ select { background: rgba(255, 255, 255, 0.06); border-color: var(--line); borde
 
   function rollThree() {
     if (busy || cooling()) return;
-    if (state.coins < ROLL3_COST) { say("×5 costs \ud83e\ude99" + fmt(ROLL3_COST) + " each time. You have \ud83e\ude99" + fmt(state.coins) + "."); return; }
-    state.coins -= ROLL3_COST;
+    var cnt = getBurst(), cost = getBurstCost();
+    if (state.coins < cost) { say("\u00d7" + cnt + " costs \ud83e\ude99" + fmt(cost) + " each time. You have \ud83e\ude99" + fmt(state.coins) + "."); return; }
+    state.coins -= cost;
     startCooldown();
-    var res = rollMany(5, "Best of 5");
-    $("status").textContent = "×5: best was " + res.best.name + " (1 in " + fmt(res.best.n) + ")" + (res.newCount ? " \u00b7 " + res.newCount + " new" : "") + " \u00b7 spent \ud83e\ude99" + fmt(ROLL3_COST);
+    var res = rollMany(cnt, "Best of " + cnt);
+    $("status").textContent = "\u00d7" + cnt + ": best was " + res.best.name + " (1 in " + fmt(res.best.n) + ")" + (res.newCount ? " \u00b7 " + res.newCount + " new" : "") + " \u00b7 spent \ud83e\ude99" + fmt(cost);
     renderAll();
   }
 
@@ -1075,13 +1182,19 @@ select { background: rgba(255, 255, 255, 0.06); border-color: var(--line); borde
       return;
     }
     b.setAttribute("aria-pressed", "true");
-    $("status").textContent = "Auto rolling every 2.4s. The stage shows the best aura of each burst.";
+    startAutoTimer();
+  }
+  function startAutoTimer() {
+    if (autoTimer) clearInterval(autoTimer);
+    var ms = getCooldown();
+    $("status").textContent = "Auto rolling every " + (ms / 1000).toFixed(1) + "s. The stage shows the best aura of each burst.";
     autoTimer = setInterval(function () {
       if (busy) return;
-      rollMany(5, "Auto ×5");
+      var cnt = getBurst();
+      rollMany(cnt, "Auto \u00d7" + cnt);
       startCooldown();
       renderAll();
-    }, COOLDOWN);
+    }, ms);
   }
 
   var armed = false, armTimer = null;
@@ -1136,6 +1249,8 @@ select { background: rgba(255, 255, 255, 0.06); border-color: var(--line); borde
   $("tabInv").addEventListener("click", function () { showTab("inv"); });
   $("tabShop").addEventListener("click", function () { showTab("shop"); });
   $("tabVar").addEventListener("click", function () { showTab("var"); });
+  $("subLuck").addEventListener("click", function () { showShopSub("luck"); });
+  $("subGear").addEventListener("click", function () { showShopSub("gear"); });
   function onGridClick(e) {
     var b = e.target.closest("button[data-id]");
     if (b) handleSell(b.dataset.id, b.dataset.mode);
