@@ -441,6 +441,25 @@ select { background: rgba(255, 255, 255, 0.06); border-color: var(--line); borde
 }
 </style>
 
+<style>
+/* Chromatic Pixelation cutscene overlay */
+.cine { position: fixed; inset: 0; z-index: 50; background: #000; display: grid; place-items: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+.cine.on { opacity: 1; pointer-events: auto; }
+.cine video { display: block; width: min(100%, calc(100dvh * 16 / 9)); aspect-ratio: 16 / 9; background: #000; image-rendering: pixelated; }
+.cine .skip {
+  position: absolute; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  min-height: 40px; padding: 0 16px; cursor: pointer; border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1); color: #eaf0ff; border: 1px solid rgba(255, 255, 255, 0.28);
+  font-family: var(--font-mono); font-weight: 600; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+}
+.cine .skip:hover { background: rgba(255, 255, 255, 0.2); }
+.cine .tap {
+  position: absolute; inset: 0; display: grid; place-items: center; cursor: pointer; border: 0; padding: 16px;
+  background: rgba(0, 0, 0, 0.78); color: #ffffff;
+  font-family: var(--font-display); font-weight: 800; font-size: 28px; letter-spacing: -0.02em; text-align: center;
+}
+.foot .grp { display: flex; flex-wrap: wrap; gap: 8px; }
+</style>
 </head>
 <body>
 <div class="app">
@@ -536,8 +555,17 @@ select { background: rgba(255, 255, 255, 0.06); border-color: var(--line); borde
 
   <div class="foot">
     <span>Progress saves in this browser.</span>
-    <button id="reset" class="reset" type="button">Reset progress</button>
+    <span class="grp">
+      <button id="previewCine" class="reset" type="button">Preview Chromatic Pixelation cutscene</button>
+      <button id="reset" class="reset" type="button">Reset progress</button>
+    </span>
   </div>
+</div>
+
+<div class="cine" id="cine" aria-hidden="true" role="dialog" aria-label="Chromatic Pixelation cutscene">
+  <video id="cineVideo" src="cutscene.mp4" playsinline preload="none"></video>
+  <button class="tap" id="cineTap" type="button" hidden>Tap to play the cutscene</button>
+  <button class="skip" id="cineSkip" type="button">Skip</button>
 </div>
 
 <script>
@@ -1110,6 +1138,33 @@ select { background: rgba(255, 255, 255, 0.06); border-color: var(--line); borde
     refreshRollBtns();
   }
 
+  /* Chromatic Pixelation cutscene: plays first, then the aura is given. */
+  var CP_ID = "chromatic-pixelation";
+  var cine = $("cine"), cv = $("cineVideo"), cineDone = null;
+  function cineClose() {
+    if (!cineDone) return;
+    var cb = cineDone;
+    cineDone = null;
+    try { cv.pause(); } catch (e) {}
+    cine.classList.remove("on");
+    cine.setAttribute("aria-hidden", "true");
+    $("cineTap").hidden = true;
+    cb();
+  }
+  function playCutscene(cb) {
+    if (cineDone) { cb(); return; }
+    var was = busy;
+    setBusy(true);
+    cineDone = function () { setBusy(was); cb(); };
+    cine.classList.add("on");
+    cine.setAttribute("aria-hidden", "false");
+    cv.muted = false;
+    try { cv.currentTime = 0; } catch (e) {}
+    var p;
+    try { p = cv.play(); } catch (e) { cineClose(); return; }
+    if (p && p.catch) p.catch(function () { if (cineDone) $("cineTap").hidden = false; });
+  }
+
   function roll() {
     if (busy || cooling()) return;
     startCooldown();
@@ -1131,25 +1186,36 @@ select { background: rgba(255, 255, 255, 0.06); border-color: var(--line); borde
       if (ticks >= 9) {
         clearInterval(timer);
         var hit = pickAura();
-        var isNew = commit(hit);
-        save();
-        showResult(hit, isNew);
-        renderAll();
-        setBusy(false);
+        var finish = function () {
+          var isNew = commit(hit);
+          save();
+          showResult(hit, isNew);
+          renderAll();
+          setBusy(false);
+        };
+        if (hit.id === CP_ID) { $("aname").textContent = "Something is glitching\u2026"; playCutscene(finish); }
+        else finish();
       }
     }, 70);
   }
 
-  function rollMany(count, label) {
-    var best = null, newCount = 0;
+  function rollMany(count, label, done) {
+    var best = null, newCount = 0, cp = 0;
     for (var i = 0; i < count; i++) {
       var a = pickAura();
-      if (commit(a)) newCount++;
+      if (a.id === CP_ID) cp++;
+      else if (commit(a)) newCount++;
       if (!best || a.n > best.n) best = a;
     }
     save();
-    showResult(best, false, label);
-    return { best: best, newCount: newCount };
+    var finish = function () {
+      for (var j = 0; j < cp; j++) { if (commit(BY_ID[CP_ID])) newCount++; }
+      save();
+      showResult(best, false, label);
+      renderAll();
+      done({ best: best, newCount: newCount });
+    };
+    if (cp) playCutscene(finish); else finish();
   }
 
   function rollThree() {
@@ -1158,9 +1224,10 @@ select { background: rgba(255, 255, 255, 0.06); border-color: var(--line); borde
     if (state.coins < cost) { say("\u00d7" + cnt + " costs \ud83e\ude99" + fmt(cost) + " each time. You have \ud83e\ude99" + fmt(state.coins) + "."); return; }
     state.coins -= cost;
     startCooldown();
-    var res = rollMany(cnt, "Best of " + cnt);
-    $("status").textContent = "\u00d7" + cnt + ": best was " + res.best.name + " (1 in " + fmt(res.best.n) + ")" + (res.newCount ? " \u00b7 " + res.newCount + " new" : "") + " \u00b7 spent \ud83e\ude99" + fmt(cost);
-    renderAll();
+    rollMany(cnt, "Best of " + cnt, function (res) {
+      $("status").textContent = "\u00d7" + cnt + ": best was " + res.best.name + " (1 in " + fmt(res.best.n) + ")" + (res.newCount ? " \u00b7 " + res.newCount + " new" : "") + " \u00b7 spent \ud83e\ude99" + fmt(cost);
+      renderAll();
+    });
   }
 
   function toggleAuto() {
@@ -1191,9 +1258,10 @@ select { background: rgba(255, 255, 255, 0.06); border-color: var(--line); borde
     autoTimer = setInterval(function () {
       if (busy) return;
       var cnt = getBurst();
-      rollMany(cnt, "Auto \u00d7" + cnt);
-      startCooldown();
-      renderAll();
+      rollMany(cnt, "Auto \u00d7" + cnt, function () {
+        startCooldown();
+        renderAll();
+      });
     }, ms);
   }
 
@@ -1266,6 +1334,30 @@ select { background: rgba(255, 255, 255, 0.06); border-color: var(--line); borde
   });
 
   $("orbSlot").appendChild(makeOrb(AURAS[0], { locked: true }));
+  cv.addEventListener("ended", cineClose);
+  cv.addEventListener("error", cineClose);
+  $("cineSkip").addEventListener("click", cineClose);
+  $("cineTap").addEventListener("click", function () {
+    $("cineTap").hidden = true;
+    var p;
+    try { p = cv.play(); } catch (e) { cineClose(); return; }
+    if (p && p.catch) p.catch(cineClose);
+  });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") cineClose(); });
+  $("previewCine").addEventListener("click", function () {
+    if (busy) return;
+    playCutscene(function () { say("Preview finished. Roll Chromatic Pixelation to earn it for real."); });
+  });
+  var warmed = false;
+  function warmCine() {
+    if (warmed) return;
+    warmed = true;
+    cv.preload = "auto";
+    try { cv.load(); } catch (e) {}
+  }
+  document.addEventListener("pointerdown", warmCine);
+  document.addEventListener("keydown", warmCine);
+
   buildShop();
   renderOdds();
   renderFilters();
