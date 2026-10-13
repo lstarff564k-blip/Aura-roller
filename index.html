@@ -551,6 +551,14 @@ details.odds summary { color: var(--muted); }
 .cstep button:hover { border-color: var(--accent); color: var(--accent); }
 .cstep .cnt { min-width: 22px; text-align: center; font-family: var(--font-mono); font-weight: 600; font-size: 13px; }
 .toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 70; max-width: min(92vw, 460px); background: var(--accent); color: var(--accent-fg); border-bottom: 4px solid #b4812a; border-radius: 12px; padding: 10px 16px; font-weight: 700; font-size: 14px; box-shadow: 0 4px 0 var(--edge); }
+.boostbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 65; background: #121a33; border-top: 2px solid var(--accent); padding: 8px 16px calc(8px + env(safe-area-inset-bottom, 0px)); display: grid; gap: 6px; justify-items: center; box-shadow: 0 -4px 0 var(--edge); }
+.boosttxt { font-family: var(--font-mono); font-size: 13px; font-variant-numeric: tabular-nums; text-align: center; }
+.boosttxt b { color: var(--accent); }
+.boostat { color: var(--muted); }
+.boosttrack { width: min(100%, 420px); height: 8px; background: #0a1028; border: 2px solid #232f57; border-radius: 6px; overflow: hidden; }
+.boosttrack i { display: block; height: 100%; width: 100%; background: var(--accent); }
+.boostbar:not([hidden]) ~ .toast { bottom: calc(80px + env(safe-area-inset-bottom, 0px)); }
+body:has(.boostbar:not([hidden])) { padding-bottom: 100px; }
 @media (max-width: 420px) { .pcard { grid-template-columns: minmax(0, 1fr); } .pshow { order: 2; } }
 </style>
 </head>
@@ -560,6 +568,7 @@ details.odds summary { color: var(--muted); }
   <header>
     <h1>Aura Roller</h1>
     <div class="sub">Roll auras, sell the ones you don't need, buy luck.</div>
+    <button id="codesBtn" class="chip act" type="button">🎁 Codes</button>
   </header>
 
   <div class="cols">
@@ -713,6 +722,21 @@ details.odds summary { color: var(--muted); }
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<div class="boostbar" id="boostBar" role="timer" hidden>
+  <div class="boosttxt"><b>⚡ 10× Luck</b> <span>ends in <b id="boostLeft">2:00</b></span> <span class="boostat">(at <span id="boostEnds"></span>)</span></div>
+  <div class="boosttrack"><i id="boostFill"></i></div>
+</div>
+
+<div class="modal" id="codesModal" role="dialog" aria-modal="true" aria-labelledby="codesTitle" hidden>
+  <form class="box" id="codesForm" autocomplete="off">
+    <h2 id="codesTitle">Redeem a code</h2>
+    <p class="shop-info">Enter a code for a reward. Each code works once.</p>
+    <input id="codeInput" class="tinput" maxlength="24" placeholder="Enter code" aria-label="Code" style="width:100%;text-transform:uppercase;">
+    <p class="status" id="codeMsg" style="margin-top:8px;"></p>
+    <div class="mbtns"><button id="codeCancel" class="alt" type="button">Close</button><button class="buy" type="submit">Redeem</button></div>
+  </form>
+</div>
 
 <div class="modal" id="nameModal" role="dialog" aria-modal="true" aria-labelledby="nameTitle" hidden>
   <form class="box" id="nameForm" autocomplete="off">
@@ -2064,6 +2088,7 @@ window.CaribCine=(function(){
     ["Oracle", "🔮", 5500, "Prophetic", 2, ["#f0d8ff", "#9a4ae0", "#26085a"]],
     ["Minotaur", "🐂", 14000, "Labyrinthine", 3, ["#ffd8c0", "#9a4a2a", "#2a1008"]],
     ["Medusa", "🗿", 24000, "Stonegazing", 3, ["#d8ffd0", "#5a8a5a", "#102a14"]],
+    ["Skeletal", "☠️", 25000, "Spooky", 3, ["#f4f1e6", "#b8b29a", "#1a1810"]],
     ["Divide By Zero", "➗", 120000, "Undefined", 4, ["#ffffff", "#ff3a3a", "#0a0a1a"], "glitch"],
     ["Heap Corruption", "🧬", 200000, "Mangled", 4, ["#b8ffa8", "#ff3ad0", "#1a0a1a"], "glitch"],
     ["Neutron Star", "⭐", 650000, "Collapsed", 5, ["#e8f4ff", "#6ab0ff", "#050a2a"]],
@@ -2145,7 +2170,7 @@ window.CaribCine=(function(){
   function sellValue(a) { return Math.max(1, Math.round(Math.pow(a.n, 0.8) * (1 + gearTotal("sell")))); }
 
   var KEY = "aura-roller.v1";
-  function newState() { return { inv: {}, found: {}, rolls: 0, recent: [], coins: 0, shop: {}, gear: {}, autoUnlocked: false, profile: null, escrow: {}, tradeDone: {} }; }
+  function newState() { return { inv: {}, found: {}, rolls: 0, recent: [], coins: 0, shop: {}, gear: {}, autoUnlocked: false, profile: null, escrow: {}, tradeDone: {}, codes: {}, boostUntil: 0 }; }
   var state = newState();
   try {
     var saved = JSON.parse(localStorage.getItem(KEY) || "null");
@@ -2159,6 +2184,8 @@ window.CaribCine=(function(){
       state.profile = state.profile || null;
       state.escrow = state.escrow || {};
       state.tradeDone = state.tradeDone || {};
+      state.codes = state.codes || {};
+      state.boostUntil = Number(state.boostUntil) || 0;
       if (!state.found) {
         state.found = {};
         Object.keys(state.inv).forEach(function (id) { if (state.inv[id]) state.found[id] = true; });
@@ -2204,9 +2231,11 @@ window.CaribCine=(function(){
   function setText(el, txt) { if (el.textContent !== txt) el.textContent = txt; }
   function setHidden(el, v) { if (el.hidden !== v) el.hidden = v; }
   function say(msg) { $("status").textContent = msg; $("invStatus").textContent = msg; }
+  function boostActive() { return (state.boostUntil || 0) > Date.now(); }
   function getLuck() {
     var l = 1;
     SHOP.forEach(function (s) { if (state.shop[s.id]) l *= s.mult; });
+    if (boostActive()) l *= 10;
     return l;
   }
   function fmtLuck(l) { return "×" + (Math.round(l * 100) / 100); }
@@ -2725,9 +2754,9 @@ window.CaribCine=(function(){
     }
     disarm();
     if (autoTimer) toggleAuto();
-    var keepP = state.profile, keepE = state.escrow, keepD = state.tradeDone;
+    var keepP = state.profile, keepE = state.escrow, keepD = state.tradeDone, keepC = state.codes, keepB = state.boostUntil;
     state = newState();
-    state.profile = keepP; state.escrow = keepE; state.tradeDone = keepD;
+    state.profile = keepP; state.escrow = keepE; state.tradeDone = keepD; state.codes = keepC || {}; state.boostUntil = keepB || 0;
     if (state.profile) state.profile.display = [];
     save();
     var stage = $("stage");
@@ -2865,6 +2894,73 @@ window.CaribCine=(function(){
   function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
   function tagOf(uid) { return "#" + String(uid || "").replace(/[^A-Za-z0-9]/g, "").slice(-4).toUpperCase(); }
   function ownedList() { return AURAS.filter(function (a) { return (state.inv[a.id] || 0) > 0; }).sort(function (x, y) { return y.n - x.n; }); }
+
+  /* ---- Codes + luck boost timer ---- */
+  var CODES = { RELEASE: { boostMs: 120000, mult: 10, msg: "Code redeemed! 10× luck for 2 minutes." }, COINS: { coins: 10000, msg: "Code redeemed! +🪙10,000 coins." }, HAPPYHALLOWEEN: { aura: "skeletal", msg: "Happy Halloween! You got the Skeletal aura. ☠️" } };
+  var lastCodeMsg = "";
+  var boostTick = null;
+  function fmtClock(ms) {
+    var s = Math.max(0, Math.ceil(ms / 1000));
+    return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
+  }
+  function updateBoost() {
+    var bar = $("boostBar");
+    if (!boostActive()) {
+      var was = !bar.hidden;
+      bar.hidden = true;
+      if (boostTick) { clearInterval(boostTick); boostTick = null; }
+      if (was) { renderStats(); toast("Your 10× luck boost ended."); }
+      return;
+    }
+    var left = state.boostUntil - Date.now();
+    bar.hidden = false;
+    $("boostLeft").textContent = fmtClock(left);
+    $("boostEnds").textContent = new Date(state.boostUntil).toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" });
+    $("boostFill").style.width = Math.min(100, left / 1200) + "%";
+  }
+  function startBoostTimer() {
+    updateBoost();
+    if (boostActive() && !boostTick) boostTick = setInterval(updateBoost, 250);
+  }
+  function redeemCode(raw) {
+    var code = String(raw || "").trim().toUpperCase();
+    if (!code) return "Type a code first.";
+    var def = CODES[code];
+    if (!def) return "That code isn't valid.";
+    if (state.codes[code]) return "You already used " + code + ".";
+    state.codes[code] = true;
+    if (def.boostMs) state.boostUntil = Date.now() + def.boostMs;
+    if (def.coins) state.coins += def.coins;
+    if (def.aura && BY_ID[def.aura]) { state.inv[def.aura] = (state.inv[def.aura] || 0) + 1; state.found[def.aura] = true; }
+    lastCodeMsg = def.msg;
+    save();
+    renderAll();
+    if (def.boostMs) startBoostTimer();
+    return "OK";
+  }
+  function openCodes() {
+    $("codeMsg").textContent = ""; $("codeMsg").style.color = "";
+    $("codeInput").value = "";
+    $("codesModal").hidden = false;
+    setTimeout(function () { $("codeInput").focus(); }, 0);
+  }
+  function closeCodes() { $("codesModal").hidden = true; }
+  $("codesBtn").addEventListener("click", openCodes);
+  $("codeCancel").addEventListener("click", closeCodes);
+  $("codesModal").addEventListener("click", function (e) { if (e.target === $("codesModal")) closeCodes(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !$("codesModal").hidden) closeCodes(); });
+  $("codesForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var r = redeemCode($("codeInput").value);
+    if (r === "OK") {
+      closeCodes();
+      toast(lastCodeMsg);
+    } else {
+      $("codeMsg").textContent = r;
+      $("codeMsg").style.color = "var(--t6)";
+    }
+  });
+  startBoostTimer();
 
   var toastTimer = null;
   function toast(msg) {
