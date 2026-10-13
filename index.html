@@ -569,6 +569,7 @@ body:has(.boostbar:not([hidden])) { padding-bottom: 100px; }
     <h1>Aura Roller</h1>
     <div class="sub">Roll auras, sell the ones you don't need, buy luck.</div>
     <button id="codesBtn" class="chip act" type="button">🎁 Codes</button>
+    <button id="logsBtn" class="chip act" type="button">📜 Logs</button>
   </header>
 
   <div class="cols">
@@ -738,7 +739,16 @@ body:has(.boostbar:not([hidden])) { padding-bottom: 100px; }
   </form>
 </div>
 
-<div class="modal" id="nameModal" role="dialog" aria-modal="true" aria-labelledby="nameTitle" hidden>
+<div class="modal" id="logsModal" role="dialog" aria-modal="true" aria-labelledby="logsTitle" hidden>
+  <div class="box">
+    <h2 id="logsTitle">All working codes</h2>
+    <p class="shop-info">Every code that works right now. Each one can be redeemed once.</p>
+    <div class="tlist" id="logsList"></div>
+    <div class="mbtns"><button id="logsClose" class="alt" type="button">Close</button><button id="logsRedeem" class="buy" type="button">Redeem a code</button></div>
+  </div>
+</div>
+
+<div class="modal" id="nameModal"role="dialog" aria-modal="true" aria-labelledby="nameTitle" hidden>
   <form class="box" id="nameForm" autocomplete="off">
     <h2 id="nameTitle">Pick your player name</h2>
     <p class="shop-info" id="nameLead"></p>
@@ -2960,6 +2970,43 @@ window.CaribCine=(function(){
       $("codeMsg").style.color = "var(--t6)";
     }
   });
+  function codeReward(def) {
+    var parts = [];
+    if (def.boostMs) parts.push((def.mult || 10) + "× luck for " + Math.round(def.boostMs / 60000) + " min");
+    if (def.coins) parts.push("🪙" + def.coins.toLocaleString() + " coins");
+    if (def.aura && BY_ID[def.aura]) parts.push(BY_ID[def.aura].name + " aura");
+    return parts.join(" + ") || "Reward";
+  }
+  function openLogs() {
+    var list = $("logsList");
+    list.textContent = "";
+    Object.keys(CODES).forEach(function (code) {
+      var used = !!state.codes[code];
+      var row = document.createElement("div");
+      row.className = "tcard";
+      var head = document.createElement("div");
+      head.className = "thead";
+      var b = document.createElement("b");
+      b.style.fontFamily = "var(--font-mono)";
+      b.textContent = code;
+      head.appendChild(b);
+      var rw = document.createElement("div");
+      rw.className = "tmiss";
+      rw.textContent = codeReward(CODES[code]);
+      var st = document.createElement("span");
+      st.className = "tstat " + (used ? "no" : "ok");
+      st.textContent = used ? "Used" : "Available";
+      row.appendChild(head); row.appendChild(rw); row.appendChild(st);
+      list.appendChild(row);
+    });
+    $("logsModal").hidden = false;
+  }
+  function closeLogs() { $("logsModal").hidden = true; }
+  $("logsBtn").addEventListener("click", openLogs);
+  $("logsClose").addEventListener("click", closeLogs);
+  $("logsRedeem").addEventListener("click", function () { closeLogs(); openCodes(); });
+  $("logsModal").addEventListener("click", function (e) { if (e.target === $("logsModal")) closeLogs(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !$("logsModal").hidden) closeLogs(); });
   startBoostTimer();
 
   var toastTimer = null;
