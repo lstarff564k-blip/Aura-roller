@@ -765,6 +765,15 @@ body:has(.boostbar:not([hidden])) { padding-bottom: 100px; }
   </div>
 </div>
 
+<div class="modal" id="giveModal" role="dialog" aria-modal="true" aria-labelledby="giveTitle" hidden>
+  <div class="box wide">
+    <h2 id="giveTitle">All Auras</h2>
+    <p class="shop-info">Click an aura to add it to your inventory.</p>
+    <div class="tlist" id="giveList"></div>
+    <div class="mbtns"><button id="giveClose" class="alt" type="button">Close</button></div>
+  </div>
+</div>
+
 <div class="modal" id="logsModal" role="dialog" aria-modal="true" aria-labelledby="logsTitle" hidden>
   <div class="box">
     <h2 id="logsTitle">All working codes</h2>
@@ -2332,7 +2341,7 @@ window.CaribCine=(function(){
   function sellValue(a) { return Math.max(1, Math.round(Math.pow(a.n, 0.8) * (1 + gearTotal("sell")))); }
 
   var KEY = "aura-roller.v1";
-  function newState() { return { inv: {}, found: {}, rolls: 0, recent: [], coins: 0, shop: {}, gear: {}, autoUnlocked: false, profile: null, escrow: {}, tradeDone: {}, codes: {}, boostUntil: 0 }; }
+  function newState() { return { inv: {}, found: {}, rolls: 0, recent: [], coins: 0, shop: {}, gear: {}, autoUnlocked: false, profile: null, escrow: {}, tradeDone: {}, codes: {}, boostUntil: 0, admin: false }; }
   var state = newState();
   try {
     var saved = JSON.parse(localStorage.getItem(KEY) || "null");
@@ -2348,6 +2357,7 @@ window.CaribCine=(function(){
       state.tradeDone = state.tradeDone || {};
       state.codes = state.codes || {};
       state.boostUntil = Number(state.boostUntil) || 0;
+      state.admin = !!state.admin;
       if (!state.found) {
         state.found = {};
         Object.keys(state.inv).forEach(function (id) { if (state.inv[id]) state.found[id] = true; });
@@ -3168,7 +3178,7 @@ window.CaribCine=(function(){
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !$("logsModal").hidden) closeLogs(); });
   /* ---- Titles ---- */
   var TITLES = [
-    { id: "admin", name: "Admin", icon: "shield", desc: "???", has: function () { return false; } },
+    { id: "admin", name: "Admin", icon: "shield", desc: "???", gotDesc: "Full access to every aura.", has: function () { return !!state.admin; } },
     { id: "malevolent", name: "Malevolent", icon: "malevolent", desc: "Get a Variant aura.", has: function () { return AURAS.some(function (a) { return a.v && state.found[a.id]; }); } }
   ];
   function openTitles() {
@@ -3180,7 +3190,7 @@ window.CaribCine=(function(){
       row.appendChild(PX.el(t.icon, "big"));
       var box = el("div", "");
       box.appendChild(el("b", "", t.name));
-      box.appendChild(el("div", "tdesc", t.desc));
+      box.appendChild(el("div", "tdesc", got && t.gotDesc ? t.gotDesc : t.desc));
       row.appendChild(box);
       row.appendChild(el("span", "tstat " + (got ? "ok" : "no"), got ? "Earned" : "Locked"));
       list.appendChild(row);
@@ -3192,6 +3202,49 @@ window.CaribCine=(function(){
   $("titlesClose").addEventListener("click", closeTitles);
   $("titlesModal").addEventListener("click", function (e) { if (e.target === $("titlesModal")) closeTitles(); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !$("titlesModal").hidden) closeTitles(); });
+  /* ---- Secret: click the backdrop moon 7 times to unlock the Admin title + aura panel ---- */
+  var moonClicks = 0;
+  function openGive() {
+    var list = $("giveList");
+    list.textContent = "";
+    AURAS.slice().sort(function (a, b) { return a.n - b.n; }).forEach(function (a) {
+      var b = el("button", "chip act");
+      b.type = "button"; b.dataset.id = a.id;
+      b.style.cssText = "display:flex;align-items:center;gap:10px;justify-content:flex-start;text-align:left;width:100%;";
+      b.appendChild(makeOrb(a, { mini: true, still: true }));
+      b.appendChild(el("span", "", a.name));
+      list.appendChild(b);
+    });
+    $("giveModal").hidden = false;
+  }
+  function closeGive() { $("giveModal").hidden = true; }
+  $("giveClose").addEventListener("click", closeGive);
+  $("giveModal").addEventListener("click", function (e) { if (e.target === $("giveModal")) closeGive(); });
+  $("giveList").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-id]"); if (!b || !BY_ID[b.dataset.id]) return;
+    var a = BY_ID[b.dataset.id];
+    state.inv[a.id] = (state.inv[a.id] || 0) + 1;
+    state.found[a.id] = true;
+    save(); renderAll();
+    toast("Got " + a.name + "! (you now have " + state.inv[a.id] + ")");
+  });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !$("giveModal").hidden) closeGive(); });
+  /* The moon beside the title is h1::before, so listen on the h1 and treat clicks on its left edge as moon clicks. */
+  var titleEl = document.querySelector("header h1");
+  titleEl.style.userSelect = "none";
+  titleEl.style.webkitUserSelect = "none";
+  titleEl.addEventListener("click", function (e) {
+    var r = titleEl.getBoundingClientRect();
+    if (e.clientX - r.left > 44) return;
+    if (state.admin) { openGive(); return; }
+    moonClicks++;
+    if (moonClicks >= 7) {
+      state.admin = true; save(); moonClicks = 0;
+      toast("Admin title unlocked!");
+      openGive();
+    }
+  });
+
   startBoostTimer();
 
   var toastTimer = null;
