@@ -561,6 +561,22 @@ details.odds summary { color: var(--muted); }
 body:has(.boostbar:not([hidden])) { padding-bottom: 100px; }
 @media (max-width: 420px) { .pcard { grid-template-columns: minmax(0, 1fr); } .pshow { order: 2; } }
 </style>
+<style>
+.trow { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; background: var(--ink-2); border: 2px solid #232f57; border-radius: 10px; padding: 10px 12px; }
+.trow.got { border-color: var(--accent); }
+.trow .px.big { width: 40px; height: 40px; vertical-align: baseline; text-indent: 0; }
+.trow.locked .px.big { opacity: 0.75; }
+.trow b { display: block; font-size: 16px; }
+.trow .tdesc { color: var(--muted); font-size: 13px; }
+/* Pixel art icons: crisp nearest-neighbour scaling, sized in whole multiples of the 10px source grid */
+.px { display: inline-block; width: 1.3em; height: 1.3em; vertical-align: -0.3em; overflow: hidden; white-space: nowrap; text-indent: 400%; font-style: normal; font-weight: 400; image-rendering: pixelated; background: no-repeat center / 100% 100%; flex: none; }
+.orb .em .px { width: calc(var(--sz) * 0.5); height: calc(var(--sz) * 0.5); vertical-align: baseline; text-indent: 0; }
+.item .ic .px { width: 40px; height: 40px; vertical-align: baseline; text-indent: 0; }
+@supports (width: round(up, 1px, 1px)) {
+  .px { width: round(up, 1.3em, 10px); height: round(up, 1.3em, 10px); }
+  .orb .em .px { width: round(down, calc(var(--sz) * 0.5), 10px); height: round(down, calc(var(--sz) * 0.5), 10px); }
+}
+</style>
 </head>
 <body>
 <canvas id="bgCanvas" aria-hidden="true"></canvas>
@@ -568,8 +584,9 @@ body:has(.boostbar:not([hidden])) { padding-bottom: 100px; }
   <header>
     <h1>Aura Roller</h1>
     <div class="sub">Roll auras, sell the ones you don't need, buy luck.</div>
-    <button id="codesBtn" class="chip act" type="button">🎁 Codes</button>
-    <button id="logsBtn" class="chip act" type="button">📜 Logs</button>
+    <button id="codesBtn" class="chip act" type="button"><i class="px" data-px="gift"></i> Codes</button>
+    <button id="titlesBtn" class="chip act" type="button"><i class="px" data-px="titles"></i> Titles</button>
+    <button id="logsBtn" class="chip act" type="button"><i class="px" data-px="scroll"></i> Logs</button>
   </header>
 
   <div class="cols">
@@ -583,12 +600,12 @@ body:has(.boostbar:not([hidden])) { padding-bottom: 100px; }
         </div>
         <div class="btns">
           <button id="roll" class="roll" type="button">Roll</button>
-          <button id="roll3" class="alt" type="button">×5 🪙100</button>
+          <button id="roll3" class="alt" type="button">×5 <i class="px" data-px="coin"></i>100</button>
           <button id="auto" class="alt" type="button" aria-pressed="false">Auto</button>
         </div>
         <p class="status" id="status" aria-live="polite"></p>
         <div class="stats two">
-          <div class="stat"><b id="sCoins">🪙 0</b><span>Coins</span></div>
+          <div class="stat"><b id="sCoins"><i class="px" data-px="coin"></i> 0</b><span>Coins</span></div>
           <div class="stat"><b id="sLuck">×1</b><span>Luck</span></div>
         </div>
         <div class="stats">
@@ -620,7 +637,7 @@ body:has(.boostbar:not([hidden])) { padding-bottom: 100px; }
           <button class="tab" id="tabProf" role="tab" aria-selected="false" type="button">Profile</button>
           <button class="tab" id="tabTrade" role="tab" aria-selected="false" type="button">Trade <span class="badge" id="tradeBadge" hidden>0</span></button>
         </div>
-        <div class="coins">🪙 <b id="hdrCoins">0</b></div>
+        <div class="coins"><i class="px" data-px="coin"></i> <b id="hdrCoins">0</b></div>
         <div class="tools" id="invTools">
           <label class="sub" for="sort">Sort</label>
           <select id="sort">
@@ -703,7 +720,7 @@ body:has(.boostbar:not([hidden])) { padding-bottom: 100px; }
           <button id="subGear" class="chip" type="button" aria-pressed="false">Gears</button>
         </div>
         <div id="shopLuckPane">
-          <p class="shop-info">Luck multiplies the chance of every aura rarer than 1 in 40. Purchases stack. <span>Your luck: <b id="shopLuck">×1</b></span> <span>Coins: <b id="shopCoins">🪙 0</b></span></p>
+          <p class="shop-info">Luck multiplies the chance of every aura rarer than 1 in 40. Purchases stack. <span>Your luck: <b id="shopLuck">×1</b></span> <span>Coins: <b id="shopCoins"><i class="px" data-px="coin"></i> 0</b></span></p>
           <div class="shop" id="shop"></div>
         </div>
         <div id="shopGearPane" hidden>
@@ -725,7 +742,7 @@ body:has(.boostbar:not([hidden])) { padding-bottom: 100px; }
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
 <div class="boostbar" id="boostBar" role="timer" hidden>
-  <div class="boosttxt"><b>⚡ 10× Luck</b> <span>ends in <b id="boostLeft">2:00</b></span> <span class="boostat">(at <span id="boostEnds"></span>)</span></div>
+  <div class="boosttxt"><b><i class="px" data-px="bolt"></i> 10× Luck</b> <span>ends in <b id="boostLeft">2:00</b></span> <span class="boostat">(at <span id="boostEnds"></span>)</span></div>
   <div class="boosttrack"><i id="boostFill"></i></div>
 </div>
 
@@ -737,6 +754,15 @@ body:has(.boostbar:not([hidden])) { padding-bottom: 100px; }
     <p class="status" id="codeMsg" style="margin-top:8px;"></p>
     <div class="mbtns"><button id="codeCancel" class="alt" type="button">Close</button><button class="buy" type="submit">Redeem</button></div>
   </form>
+</div>
+
+<div class="modal" id="titlesModal" role="dialog" aria-modal="true" aria-labelledby="titlesTitle" hidden>
+  <div class="box">
+    <h2 id="titlesTitle">Titles</h2>
+    <p class="shop-info">Special titles and how to earn them.</p>
+    <div class="tlist" id="titlesList"></div>
+    <div class="mbtns"><button id="titlesClose" class="alt" type="button">Close</button></div>
+  </div>
 </div>
 
 <div class="modal" id="logsModal" role="dialog" aria-modal="true" aria-labelledby="logsTitle" hidden>
@@ -754,7 +780,7 @@ body:has(.boostbar:not([hidden])) { padding-bottom: 100px; }
     <p class="shop-info" id="nameLead"></p>
     <div class="tools">
       <input id="nameInput" class="tinput" maxlength="16" placeholder="Your name" aria-label="Player name" style="flex:1;min-width:0;">
-      <button id="nameDice" class="chip act" type="button" title="Random cool name">🎲 Random</button>
+      <button id="nameDice" class="chip act" type="button" title="Random cool name"><i class="px" data-px="die"></i> Random</button>
     </div>
     <p class="status" id="nameErr" style="color:var(--t6);"></p>
     <div class="mbtns"><button id="nameCancel" class="alt" type="button" hidden>Cancel</button><button class="buy" type="submit">Save name</button></div>
@@ -801,6 +827,88 @@ body:has(.boostbar:not([hidden])) { padding-bottom: 100px; }
   <button class="skip" id="cineSkip" type="button">Skip</button>
 </div>
 
+<script id="pixelart">
+/* Pixel art icon set: every aura, shop item and UI icon is its own hand-drawn 8x8 sprite. */
+window.PX = (function () {
+  var PAL = {"k": "#14101f", "d": "#3a4150", "G": "#7a8394", "g": "#c4cad6", "w": "#ffffff", "r": "#e8403a", "R": "#8a1c2a", "o": "#ff8a2a", "y": "#ffd93a", "Y": "#c28a12", "a": "#fff0a0", "l": "#9be05a", "n": "#2fa84f", "N": "#1a6a34", "c": "#4fe0f0", "C": "#1a8aa8", "i": "#bfe8ff", "b": "#3a78e8", "B": "#1a3a8a", "p": "#9a5ae8", "P": "#4a2a8a", "m": "#ff6ab8", "M": "#b0286a", "s": "#f0c090", "t": "#b8703a", "T": "#5a3010", "v": "#e8e0c8"};
+  var DEF = {"coin":"..yyyy...yaayyY.yaayyyYYyayyyyYYyayyyyYYyyyyyyYY.yyyYYY...YYYY..","gift":".rr..rr.rr.yy.rr.rryyrr.mmmyymmmmmmyymmmyyyyyyyymmmyymmmMMMyyMMM","scroll":"TTTTTTT..vvvvvv..vGGGGv..vvvvvv..vGGGvv..vvvvvv..vGGGGv.TTTTTTT.","bolt":".....yy.....yy.....yy.....yyyyy.....yy.....yy.....yy......y.....","die":"wwwwwwwGwkwwwwkGwwwwwwwGwwwkwwwGwwwwwwwGwkwwwwkGwwwwwwwGGGGGGGGG","faded":"..........ggg....ggggg.gggggggggggggggggGGGGGGGG.GGGGGG.........","ash":"..........GGGG...GggGGG.GgGGGGGdGGGGGGddGGGGGddd.dddddd.........","mist":".........iiiiii.........iiiiiiii.........iiiiii.........iiiiiiii","ember":"...r.......ro.....rrro...rrooor..rooyoorrroyyyor.royyyo...rooor.","sprout":".........nn..nn.nlln.lln.nnn.nnn...nn......nn.....tttt...tttttt.","dewdrop":"...c.......c......cic.....cic....cciic...cciicc..ccicbc...cbbc..","tidal":".....bb....bbwwb..bwwbbb.bwbbbbbbbbbbbbbbcbbcbbcBBBBBBBBBBBBBBBB","verdant":".....nn....nnlnn.nnlnnn.nlnnnn...nnnnn....nn.n....t..n...t......","static":"...yyyy...yyyy...yyyy...yyyyyyy...yyyy....yyy....yy......y......","frostbite":"...ii....i.ii.i...iiii..iiiwwiiiiiiwwiii..iiii...i.ii.i....ii...","gale":"gggggggg.gggggg...GGGG.....gggg...GGGG.....ggg.....GG.......g...","solar-flare":"y..yy..y.y.yy.y...oyyo..yyyyyyyyyyyyyyyy..oyyo...y.yy.y.y..yy..y","moonlit":"...aaa....aaa....aaa.....aaa...w.aaa.....aaa......aaa......aaa..","bloodmoon":"...r......rr......rrr....rrrrr...rrwrrr..rrrrrr...rRRr.....rr...","quicksilver":"..gggg.....gg......gg.....gwGg...gwGGGg.gwGGGGGgGGGGGGGG.GGGGGG.","poseidon":"b..b..b.b..b..b.bb.bb.bb.bbbbbb....bb......bb......bb......bb...","hades":"..p..p...pPppPp.wwwwwwwwwkkwwkkwwkkwwkkwwwwkkwww.wkwkwk.........","anubis":"Y.....Y.YY...YY.YYYYYYY.YkYYYkY.YYYYYYY..YYkkYY...kkkk..........","zeus":"..gggg...gggggg.gggggggggGGGGGGG..yyy....yyy......yyy.....yy....","odin":"..........wwww...wwbbww.wwbkkbwwwwbkkbww.wwbbww...wwww..........","vital-error":"...yy.....yyyy....ykky...yykkyy..yykkyy.yyyyyyyyyyykkyyyyyyyyyyy","null-pointer":".................GGGGGG.GkkkkkkGGkkkkkkG.GGGGGG.................","stack-overflow":"rrrRrrrRrrrRrrrRRRRRRRRRrRrrrRrrrRrrrRrrRRRRRRRRrrrRrrrRrrrRrrrR","kernel-panic":"r..y..r..r.yy.r...oyyo..yyoyyoyy.oyyyyo...oyyo...r.yy.r.r..y..r.","event-horizon":"..pppp...p....p.p..bb..pp.bkkb.pp.bkkb.pp..bb..p.p....p...pppp..","aurora-borealis":"BBBwBBBBBwBBBBwBBBlllBBBBlcccllBlcppccclcppmmppcBBBBBBBBPPPPPPPP","supernova":"...ww....o.ww.o...owwo..wwwwwwwwwwwwwwww..owwo...o.ww.o....ww...","pulsar":".....yy.....yyyy..b.yyy..bb..y...cb.....cb...w..c...............","heat-death":"...ww.....wrrw....wrrw....wrrw....wrrw...wrrrrw..wrrrrw...wwww..","infinite-loop":".........mm..mm.m..mm..mm.mmmm.mm..mm..m.mm..mm.................","time-collapse":"yyyyyyyy.wwwwww...wyyw.....ww......ww.....wyyw...wyyyyw.yyyyyyyy","imperator":"y..yy..yyy.yy.yyyyyyyyyyyyryyryyyyyyyyyyYYYYYYYY................","first-light":"....y....y..y.y...yooy...yooooy.oooooooobbbbbbbbcbcbcbcbbbbbbbbb","omega":".bbbbbb.b..cc..bb.cccc.b..cccc..b.cccc.bb..cc..b.bbbbbb.........","dust":"..........vvvv..vvvvvvvv.vvvv...vv..vvvv.vvvvvv.................","moss":".....nn....nnnnn..nnllnn.nnllnn..nllnn..nnnnn...nn.n.....t......","rain":"..gggg...gggggg.ggggggggGGGGGGGG.b..b..b..b..b...b..b..b........","clay":"..tttt.....tt....tttttt.ttttttttttTttttttttttttt.tttttt...TTTT..","pearl":"..mmmm...mvvvvm.mvvvvvvmmvvwwvvmmvvwwvvm.mvvvvm...mmmm..........","coral":"r..r..r.rr.rr.rr.rrrrrr...rrrr.....rr......rr.....rrrr...MMMMMM.","thorn":"..rrr....rrRrr...rRrrr...rrrrr....rrr......n......nn.n...nn.nn..","mirage":".....yy......yy...........n......nnn....yyyyyyyyYyyyyyyYYYYYYYYY","quartz":"...ii.....iwii...iwiiii.iiiiiiic.iiiiic...iiic.....ic...........","wildfire":"..r..o.....ro......yy.....tttt...tttttt..ttrrtt.ttttttttTTTTTTTT","monsoon":"..bbbb...bbbbbb.bbbwbbbbbbbbbbbbb.b.b.b....t.......t......tt....","obsidian":"dddddddddgGdddkddGddddkddddddddddddddddddkdddddddkddddgddddddddd","jade":"..NNNN...Nwwwwn.NwllllwNNwlkklwNNwlkklwNNwllllwn.Nwwwwn...NNNN..","orchid":"..pp.pp..pppppp.pppwwppp.ppwwpp.pppppppp.pp..pp...P..P..........","glacier":"....ww.....wwww...wwiiw..wiiiiiiiiiiiiibiibiiibbbbbbbbbbBBBBBBBB","sapphire":"..bbbb...bwwbbB.bbbbbbbBBBBBBBBB.BbbbbB...BbbB.....BB...........","phoenix":"......oo....ooyo...ooyoo..ooyoo..ooyoo..ooyoo...oyo.....r.......","nightshade":"....nn...pp.pp..pPppPpp..pppppP...ppPp....pPp......p............","basilisk":"..nnnn...nlnnnn..nn..nkn..nnnn...nnnn...nnn.....nnn.nnn..nnnnn..","valkyrie":"yyyyyyyyywwwwwwyywwrrwwyywwrrwwy.ywwwwy...ywwy.....yy...........","kraken":"..CCCC...CCCCCC.CCwCCwCCCCkCCkCC.CCCCCC.C.C..C.CC.C..C.C.C....C.","ra":"y..yy..y.yyyyyy.yyyyyyyyyykyykyyyyyyyyyyyrrrrrry.yyyyyy.y..yy..y","chimera":".oooooo.ooyyyyoooyyyyyyooykyykyooyyyyyyooyykkyyo.oyyyyo...oooo..","fenrir":"G.....G.GG...GG.GGGGGGG.GkGGGkG.GGGGGGG..GGkkGG..GwwwwG.........","athena":"b.....b.bb...bb.bbbbbbbbbwwbbwwbbwkbbkwbbbbyybbb.bbbbbb..y....y.","loki":"wwwwwwwwwpppwnnwwpppwnnwwwppwnwwwwwyywwwwwyyyywwwwwyywwwwwwwwwww","segfault":".....y.y.....yo...rrrTr..rrrrrr..rwwwwr..rwwwwr..rrrrrr...rrrr..","memory-leak":"..gggg....gGGg..gggGGgggggggggggGG....gg......c......ccc......c.","blue-screen":"gggggggggbbbbbbggbwwwbbggbbbbbbggbwwbwbggggggggg...gg.....gggg..","buffer-underrun":"pppppppppwwwwwwppwkwwkwppwwwwwwppppppppppgppppgppggggggppppppppp","race-condition":"Tdwdwdw.Twdwdwd.Tdwdwdw.Twdwdwd.T.......T.......T.......T.......","zero-day":".l....l...l..l....rrrr...rrkkrr.lrrkkrrl.rrrrrr.l.rrrr.l..l..l..","fork-bomb":".....yo.....T.....dddd...dGdddd.dGGddddddddddddd.dddddd...dddd..","nebula":"...pppp...pppppp.yyyyyyyyppppppy.yyyyyyy.pppppp...pppp..........","quasar":".....gg.....gGg....gGg....bbb....bbb....bbb......t.t....t...t...","wormhole":"...cc.....cwwc...gggggg.gggyyggggyggyggy.dddddd...y..y...y....y.","eclipse":"..dddy...ddddyy.dddddyyodddddyyodddddyyo.ddddyy...dddy..........","magnetar":"ww....wwrr....bbrr....bbrr....bbrrr..bbb.rrrbbb...rrbb..........","comet":"c.......cc.......cci......ccii.....ciiw.....iwww.....www......ww","dark-matter":"..PPPP...PPPPPP.PpPPPPPPPPPPPPkPPPPkPPPPPPPPPPPP.PPPPPP...PPPP..","paradox-engine":"...yy....y.yy.y...yyyy..yyy..yyyyyy..yyy..yyyy...y.yy.y....yy...","spectrum":"..rrrr...roooor.royyyyoroylllyyoyl....lylb....blb......bb......b","big-bang":"...y.....y.y.y....yoy...yyoroyy...yoy....y.y.y.....y............","multiverse":"...yy.....gggg...gwgcgg.gcgwgcgg.gwgcgg...gggg.....Tt...........","archangel":"..yyyy...........ssssss.ssksssktssssssssssrrrrss.ssssss.........","godhead":"...yy.....yyyy....yyyy...yywwyy..ywkkwy.yyywwyyyyyyyyyyy........","eternity":"...yy.....yyyy...y.yy.y.y..yy..yyy.yy.yy.yyyyyy...y..y.....yy...","the-architect":"...cc.....wwww...wwwwww.wwwwwwww.w.w.w.w.w.w.w.w.w.w.w.wwwwwwwww","nirvana":"...m......mmm...m.mwm.m.mmmwmmm..mmmmm..nnnnnnnn.nnnnnn.........","apotheosis":"...yy......yy...yyyyyyyy.yyyyyy...yyyy...yyyyyy..yy..yy.y......y","chromatic-pixelation":"..c..c..c..cc..cccccccccccmccmcccccccccc.cccccc..c....c.c......c","oblivion-genesis":".PP..PP.PpPPPPPPPpPPPPPPPPPPPPPP.PPPPPP...PPPP.....PP...........","inverted-omega":"..wwww...w....w.w.....www....wwwwww.....w.....w..w...w....www...","crimson-imperator":".rRrr...rrRRrr...rrrr.....rR......n......n.n....n..n.n..........","shattered-time-collapse":"cccccccc.wwwwww...wccw.....ww......w......wwcw...wccccw.cccccccc","corrupted-kernel-panic":"..gggg...gllllg.gl.ll.lgglllmllggl.llllg.gllllg...gggg..........","abyssal-poseidon":"..pppp...pppppp.pwkppwkppppppppp.pppppp.p.p.p.p..p.p.p.pp.p.p.p.","cursed-anubis":"..tttt...tttttt.tttyyttttttyyttt.tttttt..tTTTTt...tttt..........","eclipsed-solar-flare":"..dddd...dddddd.dydddydddddddddddyyyyyyd.dddddd...dddd..........","frozen-heat-death":".iiiiiiiiwwiiiiciwiiiiiciiiiiiiciiiiiiiciiiiiiicciiiiiic.ccccccc","celestial-quicksilver":".gggggg.gwwwiiiggwiiiiiggiiiiiiggwiiiiig.gggggg....TT......TT...","caribbean":".n.nn.n...nnnn...n.t.n.....t.......t....yyyyyyyycyyyyyyccccccccc","pebble":"..........gggg...gwggggG.gggggGG.gggGGGG..GGGG..................","breeze":"...o......ooo....ooTo.....oo.t.......to.....tooo.....oo.........","lantern":"...TT.....rrrr...rrrrrr.rryyyyrrrryyyyrr.rrrrrr...rrrr.....TT...","amber":"..TTTT...tttttt..oooooo.oyyyyyyooyaayyyooyyyyyyo.oooooo.........","cobalt":"..bbbb...bwbbbb.bwbbbbbBbbbbbbbBbbbbbbBBbbbbbBBB.bBBBBB...BBBB..","stormbound":".dddddd.dGGddddddddddddd.dddddd..b.yy.b...yy.b...b.y..b.....b...","sundial":"..yyyy...ywwwwy.ywwkwwwyywwkkwwyywwwwwwy.ywwwwy...yyyy...TT..TT.","oracle":"..pppp...pwppmp.pwpppppppppppmpppppppppp.pppppp..YYYYYY.YYYYYYYY","minotaur":"w......www....ww.tttttt.tttttttttkttttkttttttttt.tttttt...ssss..","medusa":".GGGGG..GGGGGGG.GkkGGkkGGGGGGGGG.GGGGGG..GGnnGG..GGkkGG..GGGGGG.","skeletal":".vvvvvv.vvvvvvvvvkkvvkkvvkkvvkkv.vvkkvv.v.vvvv.v.vvvvvv.v.v..v.v","divide-by-zero":"...ww......ww...........wwwwwwwwwwwwwwww...........ww......ww...","heap-corruption":".mm..cc...mmcc.....mc......cm.....ccmm...cc..mm...ccmm.....cm...","neutron-star":"...cc......cc.....cwwc..cccwwccccccwwccc..cwwc.....cc......cc...","singularity-bloom":".rr..rr.rrrrrrrrrrryyrrr.rryyrr.rrrrrrrr.rr..rr....nn......nn...","genesis-prime":"w..w..w..w.ww.w...wwww..wwwoowww..wwww...w.ww.w.w..w..w.........","molten-zeus":"....yyy....yoy....yoy....yooyyy....yoy....yoy.....yo.....ry.....","voidborn-odin":".........d....d.dddddddddpppdpppdpppdppp.ddd.ddd................","radiant-event-horizon":"y..y..y..yyyyyy.yykkkkyyykkkkkkyykkkkkkyyykkkkyy.yyyyyy.y..y..y.","gilded-supernova":".rr..bb..rr..bb...yyyy...yaaayy.yayyyYyyyayyyYyy.yyyyyY...yyyy..","fractured-aurora":"TTTTTTTTTcc.ccpTTcc.ccpTT..T...TTTTTTTTTTcc.ppmTTcc.ppmTTTTTTTTT","bloodied-hades":"...vv....vvvvvv.v.vvvv.v.vvRvvv.v.vvvv.v.vvvvvv....vv......RR...","overclocked-omega":"...rr.....rwwr....wwww....wbbw....wwww...rwwwwr..r.oo.r....yy...","neon-spectrum":"...cc.....cwwc...cwmmwc.cwmmmmwc.cwmmwc...cwwc.....cc...........","hollow-nebula":"..pppp...p.w..p..p....p...pppp.......pp.....p..p....p..p.....pp.","ruined-big-bang":"..g..g...gggggg.gggggggg.gggggg...rr.rr..rrr.rrr.rrR.Rrr........","eclipsed-ra":"..yddd...yydddd.oyydddd.oyydddd.oyydddd..yydddd...yddd..........","corrupted-blue-screen":"dddddddddllllllcdlkkkklcdlkmkklddllllllcd.d.d.dddddddddd........","petrified-archangel":".....yy...g.g.y..ggggg....ggg.g...ggggg...ggg....gggg...GGGGGG..","inverted-godhead":"..w......www..w.www.w.w...w...w...w...w...w..www......w........w","void-apotheosis":"kkkkkkkkkwkkPkwkkkPppPkkkPpkkpPkkPpkkpPkkkPppPkkkwkkPkkkkkkkkkkk","caribbean-express":".....gg..d..gg..dddd.dd.ddddddddrddddddddwdwdwdw.ww.ww..........","cursed-ringworld":"..cc.....cwwc.....yy.....yyyyy..yy...yy.y.....y.yy...yy..yyyyy..","i-clover":".nn.nn..nnnnnnn..nnnnn..nnnnnnn..nn.nn.....n.......n......nT....","i-emerald":".g....g.g......gg......g.g....g...gnng.....nn.....nllN.....NN...","i-rabbit":"..w.w.....w.w.....wwww...wwkwk...wwwwww..wwwwww..wwwwww...w..w..","i-horseshoe":"yy....yyyk....kyyy....yyyky..ykyyyy..yyy.yyyyyy...yyyy..........","i-dice":"rrrrrrrRrwrrrrwRrrrrrrrRrrrwrrrRrrrrrrrRrwrrrrwRrrrrrrrRRRRRRRRR","i-star":"......yy..y..yyy.yyy.yy.yyyyyy...yyyy...yyyyyy..yy..yy..y....y..","i-jackpot":"rrrrrrrrrwwwwwwrrwryyrwrrwwwwwwrrrrrrrrrrdddddrYrrrrrrrrRRRRRRRR","i-casino":".g..g....d..d....d..d.d.dddddddddyddyddddddddddddyddyddddddddddd","i-sandals":"..........bb......bbb....bbbbbb.bbbwwbbbbbbbbbbbwwwwwwww........","i-hourglass":"TTTTTTTT.wwwwww...wyyw.....ww......ww.....wyyw...wyyyyw.TTTTTTTT","i-chrono":".rrrrr..rrrrrrr.rrrrrrrrrrrrrrrr.rrrrrr...wwww....wwww....ww....","i-pouch":".yy..yy...yyyy...tttttt.ttttttttttyyyytttttttttt.tttttt.........","i-ledger":"yyyyyyyyyTwwwwwyyTwGGGwyyTwwwwwyyTwGGGwyyTwwwwwyyyyyyyyyYYYYYYYY","i-midas":"..y.y.y...y.y.y...yyyyy.yyyyyyyyyyyyyyy..yyyyy....YYYY....YYYY..","i-coupon":"........rrrrrrrrrwwwrwwrr.rrrr.rrwwwrwwrrrrrrrrr................","i-twin":"..cccc...cwwccc.cw....ccc......ccc....cc.cccccc......tt.......tt","i-prism":"...ww.....wwww.r.wwwwwwowwwwwwyy.....nnl....bbbb...pppp.........","i-piggy":".m....m.mmmmmmmmmkmmmmkmmmmmmmmmmmMMMMmmmmMkkMmm.mmmmmm..mm..mm.","i-mint":"...nn.....nnnn...nnnnnn.nnnnnnnn.w.w.w.w.w.w.w.wnnnnnnnnNNNNNNNN","unknown":"..dddd...dGGGGd.dGGdddGddddGGGdd...GGdd....dd......GG......dd...","shield":"bbbbbbbbbwwwwwwBbwbyybwBbwbyybwBbwwyywwB.bwyywB...bwwB.....BB...","malevolent":"r......rrr....rrrrrrrrrrrkyrrykrrrrrrrrrrrkwwkrr.rrrrrr...RRRR..","titles":"yyyyyyyyyaaaaaaYyaryyraYyayyyyaY.yaaaaY...yyyY....r..r...rr..rr."};
+  var TOK = { "\uE000": "coin", "\uE001": "skeletal" };
+  var urls = {}, scenes = {};
+  function grid(k) { return DEF[k] || DEF.unknown; }
+  function url(k) {
+    if (urls[k]) return urls[k];
+    var g = grid(k), c = document.createElement("canvas"); c.width = c.height = 10;
+    var x = c.getContext("2d"), X, Y;
+    function on(a, b) { return a >= 0 && b >= 0 && a < 8 && b < 8 && g.charAt(b * 8 + a) !== "."; }
+    x.fillStyle = "#14101f";
+    for (Y = -1; Y < 9; Y++) for (X = -1; X < 9; X++) {
+      if (!on(X, Y) && (on(X + 1, Y) || on(X - 1, Y) || on(X, Y + 1) || on(X, Y - 1))) x.fillRect(X + 1, Y + 1, 1, 1);
+    }
+    for (Y = 0; Y < 8; Y++) for (X = 0; X < 8; X++) {
+      var ch = g.charAt(Y * 8 + X);
+      if (ch !== ".") { x.fillStyle = PAL[ch]; x.fillRect(X + 1, Y + 1, 1, 1); }
+    }
+    return (urls[k] = c.toDataURL("image/png"));
+  }
+  function paint(n, k, ch) { n.style.backgroundImage = "url(" + url(k) + ")"; return n; }
+  function el(k, cls) {
+    var i = document.createElement("i");
+    i.className = "px" + (cls ? " " + cls : "");
+    return paint(i, k);
+  }
+  /* 16x16 pixel list for the canvas scene (each sprite pixel drawn 2x2) */
+  function scene(k) {
+    if (scenes[k]) return scenes[k];
+    var g = grid(k), o = [], X, Y;
+    for (Y = 0; Y < 8; Y++) for (X = 0; X < 8; X++) {
+      var ch = g.charAt(Y * 8 + X);
+      if (ch === ".") continue;
+      var c = PAL[ch], a = X * 2, b = Y * 2;
+      o.push([a, b, c], [a + 1, b, c], [a, b + 1, c], [a + 1, b + 1, c]);
+    }
+    return (scenes[k] = o);
+  }
+  function hydrate(root) {
+    var list = (root || document).querySelectorAll("[data-px]");
+    for (var i = 0; i < list.length; i++) paint(list[i], list[i].getAttribute("data-px"));
+  }
+  /* Text can carry private-use tokens (coin, skull). Swap them for pixel icons; the token stays inside as hidden text. */
+  var TOKRE = /[\uE000-\uE0FF]/, TOKG = /[\uE000-\uE0FF]/g;
+  function fixText(n) {
+    var p = n.parentNode, v = n.nodeValue;
+    if (!p || !TOKRE.test(v) || (p.classList && p.classList.contains("px"))) return;
+    var f = document.createDocumentFragment(), last = 0, m;
+    TOKG.lastIndex = 0;
+    while ((m = TOKG.exec(v))) {
+      if (m.index > last) f.appendChild(document.createTextNode(v.slice(last, m.index)));
+      var i = el(TOK[m[0]] || "unknown"); i.appendChild(document.createTextNode(m[0])); f.appendChild(i);
+      last = m.index + 1;
+    }
+    if (last < v.length) f.appendChild(document.createTextNode(v.slice(last)));
+    p.replaceChild(f, n);
+  }
+  function fix(n) {
+    if (n.nodeType === 3) return fixText(n);
+    if (n.nodeType !== 1) return;
+    var w = document.createTreeWalker(n, NodeFilter.SHOW_TEXT), t, hits = [];
+    while ((t = w.nextNode())) if (TOKRE.test(t.nodeValue)) hits.push(t);
+    hits.forEach(fixText);
+  }
+  function start() {
+    hydrate(document);
+    fix(document.body);
+    new MutationObserver(function (ms) {
+      for (var i = 0; i < ms.length; i++) {
+        var m = ms[i];
+        if (m.type === "characterData") fixText(m.target);
+        else for (var j = 0; j < m.addedNodes.length; j++) fix(m.addedNodes[j]);
+      }
+    }).observe(document.body, { childList: true, subtree: true, characterData: true });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start); else start();
+  return { el: el, url: url, scene: scene, hydrate: hydrate, fix: fix };
+})();
+</script>
 <script>
 
 window.CaribCine=(function(){
@@ -1754,13 +1862,7 @@ window.CaribCine=(function(){
     }
     function q(v) { return Math.min(255, Math.round(v / 51) * 51); }
     function sprite(e) {
-      if (sprites[e]) return sprites[e];
-      var c = document.createElement("canvas"); c.width = c.height = 16;
-      var k = c.getContext("2d", { willReadFrequently: true });
-      k.font = '13px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif'; k.textAlign = "center"; k.textBaseline = "middle"; k.fillText(e, 8, 9);
-      var d = k.getImageData(0, 0, 16, 16).data, out = [];
-      for (var y = 0; y < 16; y++) for (var x = 0; x < 16; x++) { var i = (y * 16 + x) * 4; if (d[i + 3] > 110) out.push([x, y, "rgb(" + q(d[i]) + "," + q(d[i + 1]) + "," + q(d[i + 2]) + ")"]); }
-      sprites[e] = out; return out;
+      return sprites[e] || (sprites[e] = PX.scene(e));
     }
 
     function buildStatic() {
@@ -2041,135 +2143,135 @@ window.CaribCine=(function(){
 (function () {
   // [name, emoji, 1-in-N odds, unique rarity label, effect level 0-7, [inner, mid, outer] colors, special effect]
   var RAW = [
-    ["Faded", "☁️", 2, "Basic", 0, ["#9aa3b2", "#5b6270", "#2b303b"]],
-    ["Ash", "🪨", 4, "Common", 0, ["#d4d4d4", "#7a7a7a", "#333333"]],
-    ["Mist", "🌫️", 7, "Uncommon", 0, ["#c2e2f2", "#6a9bb5", "#27465a"]],
-    ["Ember", "🔥", 12, "Decent", 0, ["#ffc266", "#e0531f", "#5a1a08"]],
-    ["Sprout", "🌱", 20, "Fine", 0, ["#d6ffb0", "#6ac24a", "#1d4a12"]],
-    ["Dewdrop", "💧", 30, "Good", 0, ["#cdf3ff", "#4aa8e0", "#12456e"]],
-    ["Tidal", "🌊", 40, "Great", 1, ["#6fe3f7", "#1b7fcf", "#0a2f66"]],
-    ["Verdant", "🌿", 80, "Notable", 1, ["#8dffa8", "#1fa04a", "#0a3a1c"]],
-    ["Static", "⚡", 150, "Rare", 1, ["#fff58a", "#c9a800", "#4a3d00"]],
-    ["Frostbite", "❄️", 320, "Superior", 1, ["#e2f7ff", "#7ac7ee", "#1f4d73"]],
-    ["Gale", "🌪️", 500, "Elite", 1, ["#e0ffe9", "#59d1a0", "#0c4a38"]],
-    ["Solar Flare", "☀️", 800, "Epic", 2, ["#fff3b0", "#ff9a1f", "#8a1c00"]],
-    ["Moonlit", "🌙", 1500, "Fabled", 2, ["#f0edff", "#8c7be0", "#2a2060"]],
-    ["Bloodmoon", "🩸", 3000, "Mythical", 2, ["#ffb0b0", "#c4132b", "#3a0008"]],
-    ["Quicksilver", "🧪", 4500, "Legendary", 2, ["#f5f8ff", "#9aa8c8", "#2a3350"]],
-    ["Poseidon", "🔱", 6000, "Exotic", 3, ["#8ffaff", "#1670e8", "#061a5c"]],
-    ["Hades", "💀", 10000, "Infernal", 3, ["#d6a0ff", "#5a1fb0", "#12042e"]],
-    ["Anubis", "🐺", 15000, "Ancient", 3, ["#ffe9a8", "#c28a12", "#2a1c00"]],
-    ["Zeus", "🌩️", 22000, "Olympian", 3, ["#fff9c4", "#ffd23f", "#3a2d00"]],
-    ["Odin", "👁️", 30000, "Runic", 3, ["#d0e4ff", "#5b7bd1", "#0d1633"]],
-    ["Vital Error", "⚠️", 40000, "Glitched", 4, ["#ff3df0", "#00f0ff", "#1a0030"], "glitch"],
-    ["Null Pointer", "🕳️", 70000, "Corrupted", 4, ["#39ff8b", "#ff2e63", "#001a10"], "glitch"],
-    ["Stack Overflow", "🧱", 110000, "Overflow", 4, ["#7dff8a", "#ff3d81", "#08130c"], "glitch"],
-    ["Kernel Panic", "💥", 180000, "Fatal", 4, ["#ffffff", "#ff2a2a", "#1a0000"], "glitch"],
-    ["Event Horizon", "🌀", 250000, "Singularity", 5, ["#ffd7a8", "#7a3cff", "#000000"]],
-    ["Aurora Borealis", "🌌", 400000, "Celestial", 5, ["#7dffd8", "#7a8dff", "#ff7de3"]],
-    ["Supernova", "💫", 600000, "Stellar", 5, ["#fff4d6", "#ff8f3d", "#3a0f00"]],
-    ["Pulsar", "🌠", 850000, "Cosmic", 5, ["#d9f3ff", "#35a6ff", "#04122e"]],
-    ["Heat Death", "🌡️", 1000000, "Transcendent", 6, ["#ffffff", "#ff4d4d", "#1a0000"], "prism"],
-    ["Infinite Loop", "♾️", 2000000, "Paradox", 6, ["#ffffff", "#ff6ad5", "#1a0a2e"], "prism"],
-    ["Time Collapse", "⏳", 3000000, "Eternal", 6, ["#ffffff", "#7affc8", "#02201a"], "prism"],
-    ["Imperator", "👑", 5000000, "Sovereignty", 7, ["#fff6c8", "#f5b800", "#5a2a00"], "regal"],
-    ["First Light", "🌅", 10000000, "Genesis", 7, ["#ffffff", "#ff9ad5", "#ffd34d"], "regal"],
-    ["Omega", "⚛️", 25000000, "Absolute", 7, ["#ffffff", "#9fb4ff", "#2b1a66"], "regal"],
-    ["Dust", "💨", 3, "Plain", 0, ["#e6dccb", "#9a8a70", "#3a3123"]],
-    ["Moss", "🍃", 5, "Mild", 0, ["#c8f0a0", "#5a8a3a", "#1c3010"]],
-    ["Rain", "🌧️", 9, "Steady", 0, ["#d0e6ff", "#5c8ccc", "#1a2f55"]],
-    ["Clay", "🏺", 15, "Sturdy", 0, ["#f0b890", "#b2623a", "#4a2010"]],
-    ["Pearl", "🦪", 25, "Lovely", 0, ["#fff4f8", "#d9a8c4", "#5a3050"]],
-    ["Coral", "🪸", 60, "Vibrant", 1, ["#ffd0c4", "#ff6b6b", "#7a1f2a"]],
-    ["Thorn", "🌹", 110, "Sharp", 1, ["#ffb3c0", "#c2185b", "#3a0818"]],
-    ["Mirage", "🏜️", 130, "Illusory", 1, ["#fff0c8", "#e0a84a", "#6a3a10"]],
-    ["Quartz", "🔹", 200, "Brilliant", 1, ["#f0f8ff", "#8ab4e8", "#2a3f6a"]],
-    ["Wildfire", "🌋", 250, "Fierce", 1, ["#ffe08a", "#ff5a1a", "#5a0a00"]],
-    ["Monsoon", "🌂", 400, "Roaring", 1, ["#b8e8ff", "#2a7ab8", "#08213a"]],
-    ["Obsidian", "⬛", 450, "Volcanic", 1, ["#8a8aa8", "#33334d", "#07070f"]],
-    ["Jade", "🧿", 1000, "Auspicious", 2, ["#c8ffe0", "#1fb87a", "#064a30"]],
-    ["Orchid", "🌸", 1200, "Exquisite", 2, ["#ffe0f8", "#c85ad8", "#3f1050"]],
-    ["Glacier", "🏔️", 1800, "Imposing", 2, ["#f0ffff", "#6ad0e8", "#0f3a55"]],
-    ["Sapphire", "🔷", 2000, "Resplendent", 2, ["#d0e4ff", "#2a5ad8", "#0a1a5a"]],
-    ["Phoenix", "🪶", 2500, "Reborn", 2, ["#fff0a0", "#ff7a1a", "#6a1a00"]],
-    ["Nightshade", "🍇", 3500, "Venomous", 2, ["#e0b8ff", "#6a2a9a", "#1a0830"]],
-    ["Basilisk", "🐍", 7500, "Petrifying", 3, ["#d8ff9a", "#4a9a1a", "#0f2a05"]],
-    ["Valkyrie", "🛡️", 9000, "Valiant", 3, ["#fffbe0", "#d8c070", "#4a3a10"]],
-    ["Kraken", "🦑", 12000, "Abyssal", 3, ["#a8f0e0", "#1a6a8a", "#041a2a"]],
-    ["Ra", "🌞", 17000, "Radiant", 3, ["#fffadc", "#ffc21f", "#7a3a00"]],
-    ["Chimera", "🦁", 18000, "Hybrid", 3, ["#ffd8a0", "#c26a2a", "#3a1808"]],
-    ["Fenrir", "🐕", 20000, "Bound", 3, ["#e0e8f0", "#6a7a90", "#10161f"]],
-    ["Athena", "🦉", 26000, "Wise", 3, ["#e8f0ff", "#8aa0d8", "#1a2450"]],
-    ["Loki", "🃏", 28000, "Trickster", 3, ["#b8ffc8", "#2aa860", "#3a0a5a"]],
-    ["Segfault", "🧨", 50000, "Fragmented", 4, ["#ff5a5a", "#ffe03a", "#1a0a00"], "glitch"],
-    ["Memory Leak", "🚰", 60000, "Draining", 4, ["#7affea", "#ff3a9a", "#001a1a"], "glitch"],
-    ["Blue Screen", "🖥️", 85000, "Crashed", 4, ["#ffffff", "#1a4aff", "#00082a"], "glitch"],
-    ["Buffer Underrun", "📼", 95000, "Unstable", 4, ["#ffe0ff", "#a03aff", "#10002a"], "glitch"],
-    ["Race Condition", "🏁", 130000, "Desynced", 4, ["#fff23a", "#3affd0", "#1a1a00"], "glitch"],
-    ["Zero Day", "🐛", 150000, "Exploited", 4, ["#a0ff3a", "#ff2a2a", "#0a1a00"], "glitch"],
-    ["Fork Bomb", "💣", 165000, "Replicating", 4, ["#ffa03a", "#3a7aff", "#1a0a00"], "glitch"],
-    ["Nebula", "🪐", 300000, "Nebulous", 5, ["#ffd0f8", "#a04ae8", "#1a0a3a"]],
-    ["Quasar", "🔭", 330000, "Quasi-Stellar", 5, ["#e0f8ff", "#3ad0ff", "#02142a"]],
-    ["Wormhole", "🛸", 500000, "Warped", 5, ["#d0ffe8", "#3a6aff", "#02021a"]],
-    ["Eclipse", "🌒", 550000, "Umbral", 5, ["#fff0d0", "#ff9a3a", "#0a0510"]],
-    ["Magnetar", "🧲", 700000, "Magnetic", 5, ["#ffd0d0", "#e83a6a", "#2a0518"]],
-    ["Comet", "☄️", 750000, "Wandering", 5, ["#f0ffff", "#7ad8ff", "#0a2a4a"]],
-    ["Dark Matter", "🌑", 950000, "Unseen", 5, ["#a8a8ff", "#3a2a8a", "#000005"]],
-    ["Paradox Engine", "⚙️", 1200000, "Recursive", 6, ["#ffffff", "#ffb03a", "#1a1000"], "prism"],
-    ["Spectrum", "🌈", 1500000, "Chromatic", 6, ["#ffffff", "#ff5aa8", "#0a1a2e"], "prism"],
-    ["Big Bang", "🎆", 2500000, "Primordial", 6, ["#ffffff", "#ffd03a", "#2a0a1a"], "prism"],
-    ["Multiverse", "🪩", 4000000, "Boundless", 6, ["#ffffff", "#5ab0ff", "#1a0a3a"], "prism"],
-    ["Archangel", "😇", 7500000, "Seraphic", 7, ["#ffffff", "#fff0a0", "#a0b8ff"], "regal"],
-    ["Godhead", "🕉️", 15000000, "Divine", 7, ["#ffffff", "#ffa05a", "#4a1a5a"], "regal"],
-    ["Eternity", "⚜️", 20000000, "Everlasting", 7, ["#fffbe8", "#e8c24a", "#2a1a4a"], "regal"],
-    ["The Architect", "🏛️", 40000000, "Primeval", 7, ["#ffffff", "#7affe0", "#0a2a4a"], "regal"],
-    ["Nirvana", "🪷", 50000000, "Enlightened", 7, ["#ffffff", "#ff9ad0", "#3a1a5a"], "regal"],
-    ["Apotheosis", "🌟", 100000000, "Ascendant", 7, ["#ffffff", "#ffe03a", "#ff3a7a"], "regal"],
-    ["Chromatic Pixelation", "👾", 78000000, "Chromatic Pixelation", 7, ["#ffffff", "#ff3af0", "#00e5ff"], "regal prism"],
-    ["Oblivion Genesis", "🖤", 120000000, "Oblivion Genesis", 7, ["#d8b8ff", "#4a1a8a", "#000000"], "regal"],
-    ["Inverted Omega", "🔄", 200000000, "Inverted Omega", 7, ["#1a1a40", "#e8e8ff", "#ffe8a0"], "regal"],
-    ["Crimson Imperator", "🥀", 90000000, "Crimson Imperator", 7, ["#ffb0a0", "#d01030", "#2a0008"], "regal"],
-    ["Shattered Time Collapse", "⌛", 65000000, "Shattered Time Collapse", 7, ["#ffffff", "#40ffd0", "#101040"], "regal prism"],
-    ["Corrupted Kernel Panic", "🧫", 30000000, "Corrupted Kernel Panic", 7, ["#ffffff", "#ff2a6a", "#1a0020"], "regal glitch"],
-    ["Abyssal Poseidon", "🐙", 22000000, "Abyssal Poseidon", 7, ["#80fff0", "#0a4aa0", "#00061a"], "regal"],
-    ["Cursed Anubis", "⚰️", 18000000, "Cursed Anubis", 7, ["#c8ffa0", "#6a8a10", "#0a1400"], "regal"],
-    ["Eclipsed Solar Flare", "🌚", 14000000, "Eclipsed Solar Flare", 7, ["#ffe090", "#ff6a00", "#0a0008"], "regal"],
-    ["Frozen Heat Death", "🧊", 55000000, "Frozen Heat Death", 7, ["#ffffff", "#80e0ff", "#0a2a5a"], "regal prism"],
-    ["Celestial Quicksilver", "🪞", 45000000, "Celestial Quicksilver", 7, ["#ffffff", "#b0c0ff", "#ffd0f0"], "regal"],
-    ["Caribbean", "🏝️", 9000, "Caribbean", 3, ["#c8fff4", "#1ac8c0", "#05405a"]],
-    ["Pebble", "⚪", 6, "Humble", 0, ["#f0f0f0", "#a8a8b0", "#3a3a42"]],
-    ["Breeze", "🍂", 11, "Gentle", 0, ["#ffe6b8", "#d0883a", "#4a2a0a"]],
-    ["Lantern", "🏮", 35, "Glowing", 0, ["#ffe8a8", "#e8602a", "#4a1008"]],
-    ["Amber", "🍯", 90, "Preserved", 1, ["#fff0b0", "#e8a01a", "#5a3000"]],
-    ["Cobalt", "🔵", 170, "Deep", 1, ["#c8dcff", "#2a58d0", "#081a50"]],
-    ["Stormbound", "⛈️", 600, "Thunderous", 1, ["#d8e4ff", "#5a6ac0", "#10143a"]],
-    ["Sundial", "🕰️", 1400, "Timeworn", 2, ["#fff4d0", "#c8a24a", "#4a3410"]],
-    ["Oracle", "🔮", 5500, "Prophetic", 2, ["#f0d8ff", "#9a4ae0", "#26085a"]],
-    ["Minotaur", "🐂", 14000, "Labyrinthine", 3, ["#ffd8c0", "#9a4a2a", "#2a1008"]],
-    ["Medusa", "🗿", 24000, "Stonegazing", 3, ["#d8ffd0", "#5a8a5a", "#102a14"]],
-    ["Skeletal", "☠️", 25000, "Spooky", 3, ["#f4f1e6", "#b8b29a", "#1a1810"]],
-    ["Divide By Zero", "➗", 120000, "Undefined", 4, ["#ffffff", "#ff3a3a", "#0a0a1a"], "glitch"],
-    ["Heap Corruption", "🧬", 200000, "Mangled", 4, ["#b8ffa8", "#ff3ad0", "#1a0a1a"], "glitch"],
-    ["Neutron Star", "⭐", 650000, "Collapsed", 5, ["#e8f4ff", "#6ab0ff", "#050a2a"]],
-    ["Singularity Bloom", "🌺", 1800000, "Blooming", 6, ["#ffffff", "#ff7ab8", "#1a0a2a"], "prism"],
-    ["Genesis Prime", "🔆", 60000000, "Foundational", 7, ["#ffffff", "#ffd89a", "#3a1a5a"], "regal"],
-    ["Molten Zeus", "🔥", 35000000, "Molten Zeus", 7, ["#fff0b0", "#ff5a1a", "#2a0800"], "regal"],
-    ["Voidborn Odin", "🕶️", 48000000, "Voidborn Odin", 7, ["#c8b8ff", "#3a1a8a", "#000008"], "regal"],
-    ["Radiant Event Horizon", "🌞", 28000000, "Radiant Event Horizon", 7, ["#ffffff", "#ffb03a", "#4a1a7a"], "regal"],
-    ["Gilded Supernova", "🏅", 16000000, "Gilded Supernova", 7, ["#fffbe0", "#f5c000", "#4a2a00"], "regal"],
-    ["Fractured Aurora", "🪟", 12000000, "Fractured Aurora", 7, ["#a8ffe8", "#ff5ad8", "#0a1a3a"], "regal prism"],
-    ["Bloodied Hades", "🩻", 24000000, "Bloodied Hades", 7, ["#ffb8c8", "#a0102a", "#1a0008"], "regal"],
-    ["Overclocked Omega", "🚀", 150000000, "Overclocked Omega", 7, ["#ffffff", "#3affff", "#ff3a8a"], "regal glitch"],
-    ["Neon Spectrum", "💠", 38000000, "Neon Spectrum", 7, ["#ffffff", "#3aff9a", "#ff3aff"], "regal prism"],
-    ["Hollow Nebula", "🫧", 11000000, "Hollow Nebula", 7, ["#e8d8ff", "#6a4ac8", "#050010"], "regal"],
-    ["Ruined Big Bang", "🧨", 70000000, "Ruined Big Bang", 7, ["#ffffff", "#ff6a3a", "#1a0a0a"], "regal glitch"],
-    ["Eclipsed Ra", "🌘", 20000000, "Eclipsed Ra", 7, ["#ffe8a0", "#c86a00", "#0a0508"], "regal"],
-    ["Corrupted Blue Screen", "📟", 26000000, "Corrupted Blue Screen", 7, ["#ffffff", "#2a5aff", "#2a0030"], "regal glitch"],
-    ["Petrified Archangel", "🗽", 85000000, "Petrified Archangel", 7, ["#e8e8f0", "#7a8098", "#10121a"], "regal"],
-    ["Inverted Godhead", "🔃", 160000000, "Inverted Godhead", 7, ["#2a1a40", "#ffd8a0", "#ffffff"], "regal"],
-    ["Void Apotheosis", "🌌", 250000000, "Void Apotheosis", 7, ["#d8c8ff", "#6a3ae8", "#000000"], "regal prism"],
-    ["Caribbean Express", "🚂", 32000000, "Caribbean Express", 7, ["#ffffff", "#20e8d0", "#ff8a3a"], "regal prism"],
-    ["Cursed Ringworld", "💍", 570000000, "Cursed Ringworld", 7, ["#ffd0a0", "#c03a10", "#120200"], "regal glitch"]
+    ["Faded", "faded", 2, "Basic", 0, ["#9aa3b2", "#5b6270", "#2b303b"]],
+    ["Ash", "ash", 4, "Common", 0, ["#d4d4d4", "#7a7a7a", "#333333"]],
+    ["Mist", "mist", 7, "Uncommon", 0, ["#c2e2f2", "#6a9bb5", "#27465a"]],
+    ["Ember", "ember", 12, "Decent", 0, ["#ffc266", "#e0531f", "#5a1a08"]],
+    ["Sprout", "sprout", 20, "Fine", 0, ["#d6ffb0", "#6ac24a", "#1d4a12"]],
+    ["Dewdrop", "dewdrop", 30, "Good", 0, ["#cdf3ff", "#4aa8e0", "#12456e"]],
+    ["Tidal", "tidal", 40, "Great", 1, ["#6fe3f7", "#1b7fcf", "#0a2f66"]],
+    ["Verdant", "verdant", 80, "Notable", 1, ["#8dffa8", "#1fa04a", "#0a3a1c"]],
+    ["Static", "static", 150, "Rare", 1, ["#fff58a", "#c9a800", "#4a3d00"]],
+    ["Frostbite", "frostbite", 320, "Superior", 1, ["#e2f7ff", "#7ac7ee", "#1f4d73"]],
+    ["Gale", "gale", 500, "Elite", 1, ["#e0ffe9", "#59d1a0", "#0c4a38"]],
+    ["Solar Flare", "solar-flare", 800, "Epic", 2, ["#fff3b0", "#ff9a1f", "#8a1c00"]],
+    ["Moonlit", "moonlit", 1500, "Fabled", 2, ["#f0edff", "#8c7be0", "#2a2060"]],
+    ["Bloodmoon", "bloodmoon", 3000, "Mythical", 2, ["#ffb0b0", "#c4132b", "#3a0008"]],
+    ["Quicksilver", "quicksilver", 4500, "Legendary", 2, ["#f5f8ff", "#9aa8c8", "#2a3350"]],
+    ["Poseidon", "poseidon", 6000, "Exotic", 3, ["#8ffaff", "#1670e8", "#061a5c"]],
+    ["Hades", "hades", 10000, "Infernal", 3, ["#d6a0ff", "#5a1fb0", "#12042e"]],
+    ["Anubis", "anubis", 15000, "Ancient", 3, ["#ffe9a8", "#c28a12", "#2a1c00"]],
+    ["Zeus", "zeus", 22000, "Olympian", 3, ["#fff9c4", "#ffd23f", "#3a2d00"]],
+    ["Odin", "odin", 30000, "Runic", 3, ["#d0e4ff", "#5b7bd1", "#0d1633"]],
+    ["Vital Error", "vital-error", 40000, "Glitched", 4, ["#ff3df0", "#00f0ff", "#1a0030"], "glitch"],
+    ["Null Pointer", "null-pointer", 70000, "Corrupted", 4, ["#39ff8b", "#ff2e63", "#001a10"], "glitch"],
+    ["Stack Overflow", "stack-overflow", 110000, "Overflow", 4, ["#7dff8a", "#ff3d81", "#08130c"], "glitch"],
+    ["Kernel Panic", "kernel-panic", 180000, "Fatal", 4, ["#ffffff", "#ff2a2a", "#1a0000"], "glitch"],
+    ["Event Horizon", "event-horizon", 250000, "Singularity", 5, ["#ffd7a8", "#7a3cff", "#000000"]],
+    ["Aurora Borealis", "aurora-borealis", 400000, "Celestial", 5, ["#7dffd8", "#7a8dff", "#ff7de3"]],
+    ["Supernova", "supernova", 600000, "Stellar", 5, ["#fff4d6", "#ff8f3d", "#3a0f00"]],
+    ["Pulsar", "pulsar", 850000, "Cosmic", 5, ["#d9f3ff", "#35a6ff", "#04122e"]],
+    ["Heat Death", "heat-death", 1000000, "Transcendent", 6, ["#ffffff", "#ff4d4d", "#1a0000"], "prism"],
+    ["Infinite Loop", "infinite-loop", 2000000, "Paradox", 6, ["#ffffff", "#ff6ad5", "#1a0a2e"], "prism"],
+    ["Time Collapse", "time-collapse", 3000000, "Eternal", 6, ["#ffffff", "#7affc8", "#02201a"], "prism"],
+    ["Imperator", "imperator", 5000000, "Sovereignty", 7, ["#fff6c8", "#f5b800", "#5a2a00"], "regal"],
+    ["First Light", "first-light", 10000000, "Genesis", 7, ["#ffffff", "#ff9ad5", "#ffd34d"], "regal"],
+    ["Omega", "omega", 25000000, "Absolute", 7, ["#ffffff", "#9fb4ff", "#2b1a66"], "regal"],
+    ["Dust", "dust", 3, "Plain", 0, ["#e6dccb", "#9a8a70", "#3a3123"]],
+    ["Moss", "moss", 5, "Mild", 0, ["#c8f0a0", "#5a8a3a", "#1c3010"]],
+    ["Rain", "rain", 9, "Steady", 0, ["#d0e6ff", "#5c8ccc", "#1a2f55"]],
+    ["Clay", "clay", 15, "Sturdy", 0, ["#f0b890", "#b2623a", "#4a2010"]],
+    ["Pearl", "pearl", 25, "Lovely", 0, ["#fff4f8", "#d9a8c4", "#5a3050"]],
+    ["Coral", "coral", 60, "Vibrant", 1, ["#ffd0c4", "#ff6b6b", "#7a1f2a"]],
+    ["Thorn", "thorn", 110, "Sharp", 1, ["#ffb3c0", "#c2185b", "#3a0818"]],
+    ["Mirage", "mirage", 130, "Illusory", 1, ["#fff0c8", "#e0a84a", "#6a3a10"]],
+    ["Quartz", "quartz", 200, "Brilliant", 1, ["#f0f8ff", "#8ab4e8", "#2a3f6a"]],
+    ["Wildfire", "wildfire", 250, "Fierce", 1, ["#ffe08a", "#ff5a1a", "#5a0a00"]],
+    ["Monsoon", "monsoon", 400, "Roaring", 1, ["#b8e8ff", "#2a7ab8", "#08213a"]],
+    ["Obsidian", "obsidian", 450, "Volcanic", 1, ["#8a8aa8", "#33334d", "#07070f"]],
+    ["Jade", "jade", 1000, "Auspicious", 2, ["#c8ffe0", "#1fb87a", "#064a30"]],
+    ["Orchid", "orchid", 1200, "Exquisite", 2, ["#ffe0f8", "#c85ad8", "#3f1050"]],
+    ["Glacier", "glacier", 1800, "Imposing", 2, ["#f0ffff", "#6ad0e8", "#0f3a55"]],
+    ["Sapphire", "sapphire", 2000, "Resplendent", 2, ["#d0e4ff", "#2a5ad8", "#0a1a5a"]],
+    ["Phoenix", "phoenix", 2500, "Reborn", 2, ["#fff0a0", "#ff7a1a", "#6a1a00"]],
+    ["Nightshade", "nightshade", 3500, "Venomous", 2, ["#e0b8ff", "#6a2a9a", "#1a0830"]],
+    ["Basilisk", "basilisk", 7500, "Petrifying", 3, ["#d8ff9a", "#4a9a1a", "#0f2a05"]],
+    ["Valkyrie", "valkyrie", 9000, "Valiant", 3, ["#fffbe0", "#d8c070", "#4a3a10"]],
+    ["Kraken", "kraken", 12000, "Abyssal", 3, ["#a8f0e0", "#1a6a8a", "#041a2a"]],
+    ["Ra", "ra", 17000, "Radiant", 3, ["#fffadc", "#ffc21f", "#7a3a00"]],
+    ["Chimera", "chimera", 18000, "Hybrid", 3, ["#ffd8a0", "#c26a2a", "#3a1808"]],
+    ["Fenrir", "fenrir", 20000, "Bound", 3, ["#e0e8f0", "#6a7a90", "#10161f"]],
+    ["Athena", "athena", 26000, "Wise", 3, ["#e8f0ff", "#8aa0d8", "#1a2450"]],
+    ["Loki", "loki", 28000, "Trickster", 3, ["#b8ffc8", "#2aa860", "#3a0a5a"]],
+    ["Segfault", "segfault", 50000, "Fragmented", 4, ["#ff5a5a", "#ffe03a", "#1a0a00"], "glitch"],
+    ["Memory Leak", "memory-leak", 60000, "Draining", 4, ["#7affea", "#ff3a9a", "#001a1a"], "glitch"],
+    ["Blue Screen", "blue-screen", 85000, "Crashed", 4, ["#ffffff", "#1a4aff", "#00082a"], "glitch"],
+    ["Buffer Underrun", "buffer-underrun", 95000, "Unstable", 4, ["#ffe0ff", "#a03aff", "#10002a"], "glitch"],
+    ["Race Condition", "race-condition", 130000, "Desynced", 4, ["#fff23a", "#3affd0", "#1a1a00"], "glitch"],
+    ["Zero Day", "zero-day", 150000, "Exploited", 4, ["#a0ff3a", "#ff2a2a", "#0a1a00"], "glitch"],
+    ["Fork Bomb", "fork-bomb", 165000, "Replicating", 4, ["#ffa03a", "#3a7aff", "#1a0a00"], "glitch"],
+    ["Nebula", "nebula", 300000, "Nebulous", 5, ["#ffd0f8", "#a04ae8", "#1a0a3a"]],
+    ["Quasar", "quasar", 330000, "Quasi-Stellar", 5, ["#e0f8ff", "#3ad0ff", "#02142a"]],
+    ["Wormhole", "wormhole", 500000, "Warped", 5, ["#d0ffe8", "#3a6aff", "#02021a"]],
+    ["Eclipse", "eclipse", 550000, "Umbral", 5, ["#fff0d0", "#ff9a3a", "#0a0510"]],
+    ["Magnetar", "magnetar", 700000, "Magnetic", 5, ["#ffd0d0", "#e83a6a", "#2a0518"]],
+    ["Comet", "comet", 750000, "Wandering", 5, ["#f0ffff", "#7ad8ff", "#0a2a4a"]],
+    ["Dark Matter", "dark-matter", 950000, "Unseen", 5, ["#a8a8ff", "#3a2a8a", "#000005"]],
+    ["Paradox Engine", "paradox-engine", 1200000, "Recursive", 6, ["#ffffff", "#ffb03a", "#1a1000"], "prism"],
+    ["Spectrum", "spectrum", 1500000, "Chromatic", 6, ["#ffffff", "#ff5aa8", "#0a1a2e"], "prism"],
+    ["Big Bang", "big-bang", 2500000, "Primordial", 6, ["#ffffff", "#ffd03a", "#2a0a1a"], "prism"],
+    ["Multiverse", "multiverse", 4000000, "Boundless", 6, ["#ffffff", "#5ab0ff", "#1a0a3a"], "prism"],
+    ["Archangel", "archangel", 7500000, "Seraphic", 7, ["#ffffff", "#fff0a0", "#a0b8ff"], "regal"],
+    ["Godhead", "godhead", 15000000, "Divine", 7, ["#ffffff", "#ffa05a", "#4a1a5a"], "regal"],
+    ["Eternity", "eternity", 20000000, "Everlasting", 7, ["#fffbe8", "#e8c24a", "#2a1a4a"], "regal"],
+    ["The Architect", "the-architect", 40000000, "Primeval", 7, ["#ffffff", "#7affe0", "#0a2a4a"], "regal"],
+    ["Nirvana", "nirvana", 50000000, "Enlightened", 7, ["#ffffff", "#ff9ad0", "#3a1a5a"], "regal"],
+    ["Apotheosis", "apotheosis", 100000000, "Ascendant", 7, ["#ffffff", "#ffe03a", "#ff3a7a"], "regal"],
+    ["Chromatic Pixelation", "chromatic-pixelation", 78000000, "Chromatic Pixelation", 7, ["#ffffff", "#ff3af0", "#00e5ff"], "regal prism"],
+    ["Oblivion Genesis", "oblivion-genesis", 120000000, "Oblivion Genesis", 7, ["#d8b8ff", "#4a1a8a", "#000000"], "regal"],
+    ["Inverted Omega", "inverted-omega", 200000000, "Inverted Omega", 7, ["#1a1a40", "#e8e8ff", "#ffe8a0"], "regal"],
+    ["Crimson Imperator", "crimson-imperator", 90000000, "Crimson Imperator", 7, ["#ffb0a0", "#d01030", "#2a0008"], "regal"],
+    ["Shattered Time Collapse", "shattered-time-collapse", 65000000, "Shattered Time Collapse", 7, ["#ffffff", "#40ffd0", "#101040"], "regal prism"],
+    ["Corrupted Kernel Panic", "corrupted-kernel-panic", 30000000, "Corrupted Kernel Panic", 7, ["#ffffff", "#ff2a6a", "#1a0020"], "regal glitch"],
+    ["Abyssal Poseidon", "abyssal-poseidon", 22000000, "Abyssal Poseidon", 7, ["#80fff0", "#0a4aa0", "#00061a"], "regal"],
+    ["Cursed Anubis", "cursed-anubis", 18000000, "Cursed Anubis", 7, ["#c8ffa0", "#6a8a10", "#0a1400"], "regal"],
+    ["Eclipsed Solar Flare", "eclipsed-solar-flare", 14000000, "Eclipsed Solar Flare", 7, ["#ffe090", "#ff6a00", "#0a0008"], "regal"],
+    ["Frozen Heat Death", "frozen-heat-death", 55000000, "Frozen Heat Death", 7, ["#ffffff", "#80e0ff", "#0a2a5a"], "regal prism"],
+    ["Celestial Quicksilver", "celestial-quicksilver", 45000000, "Celestial Quicksilver", 7, ["#ffffff", "#b0c0ff", "#ffd0f0"], "regal"],
+    ["Caribbean", "caribbean", 9000, "Caribbean", 3, ["#c8fff4", "#1ac8c0", "#05405a"]],
+    ["Pebble", "pebble", 6, "Humble", 0, ["#f0f0f0", "#a8a8b0", "#3a3a42"]],
+    ["Breeze", "breeze", 11, "Gentle", 0, ["#ffe6b8", "#d0883a", "#4a2a0a"]],
+    ["Lantern", "lantern", 35, "Glowing", 0, ["#ffe8a8", "#e8602a", "#4a1008"]],
+    ["Amber", "amber", 90, "Preserved", 1, ["#fff0b0", "#e8a01a", "#5a3000"]],
+    ["Cobalt", "cobalt", 170, "Deep", 1, ["#c8dcff", "#2a58d0", "#081a50"]],
+    ["Stormbound", "stormbound", 600, "Thunderous", 1, ["#d8e4ff", "#5a6ac0", "#10143a"]],
+    ["Sundial", "sundial", 1400, "Timeworn", 2, ["#fff4d0", "#c8a24a", "#4a3410"]],
+    ["Oracle", "oracle", 5500, "Prophetic", 2, ["#f0d8ff", "#9a4ae0", "#26085a"]],
+    ["Minotaur", "minotaur", 14000, "Labyrinthine", 3, ["#ffd8c0", "#9a4a2a", "#2a1008"]],
+    ["Medusa", "medusa", 24000, "Stonegazing", 3, ["#d8ffd0", "#5a8a5a", "#102a14"]],
+    ["Skeletal", "skeletal", 25000, "Spooky", 3, ["#f4f1e6", "#b8b29a", "#1a1810"]],
+    ["Divide By Zero", "divide-by-zero", 120000, "Undefined", 4, ["#ffffff", "#ff3a3a", "#0a0a1a"], "glitch"],
+    ["Heap Corruption", "heap-corruption", 200000, "Mangled", 4, ["#b8ffa8", "#ff3ad0", "#1a0a1a"], "glitch"],
+    ["Neutron Star", "neutron-star", 650000, "Collapsed", 5, ["#e8f4ff", "#6ab0ff", "#050a2a"]],
+    ["Singularity Bloom", "singularity-bloom", 1800000, "Blooming", 6, ["#ffffff", "#ff7ab8", "#1a0a2a"], "prism"],
+    ["Genesis Prime", "genesis-prime", 60000000, "Foundational", 7, ["#ffffff", "#ffd89a", "#3a1a5a"], "regal"],
+    ["Molten Zeus", "molten-zeus", 35000000, "Molten Zeus", 7, ["#fff0b0", "#ff5a1a", "#2a0800"], "regal"],
+    ["Voidborn Odin", "voidborn-odin", 48000000, "Voidborn Odin", 7, ["#c8b8ff", "#3a1a8a", "#000008"], "regal"],
+    ["Radiant Event Horizon", "radiant-event-horizon", 28000000, "Radiant Event Horizon", 7, ["#ffffff", "#ffb03a", "#4a1a7a"], "regal"],
+    ["Gilded Supernova", "gilded-supernova", 16000000, "Gilded Supernova", 7, ["#fffbe0", "#f5c000", "#4a2a00"], "regal"],
+    ["Fractured Aurora", "fractured-aurora", 12000000, "Fractured Aurora", 7, ["#a8ffe8", "#ff5ad8", "#0a1a3a"], "regal prism"],
+    ["Bloodied Hades", "bloodied-hades", 24000000, "Bloodied Hades", 7, ["#ffb8c8", "#a0102a", "#1a0008"], "regal"],
+    ["Overclocked Omega", "overclocked-omega", 150000000, "Overclocked Omega", 7, ["#ffffff", "#3affff", "#ff3a8a"], "regal glitch"],
+    ["Neon Spectrum", "neon-spectrum", 38000000, "Neon Spectrum", 7, ["#ffffff", "#3aff9a", "#ff3aff"], "regal prism"],
+    ["Hollow Nebula", "hollow-nebula", 11000000, "Hollow Nebula", 7, ["#e8d8ff", "#6a4ac8", "#050010"], "regal"],
+    ["Ruined Big Bang", "ruined-big-bang", 70000000, "Ruined Big Bang", 7, ["#ffffff", "#ff6a3a", "#1a0a0a"], "regal glitch"],
+    ["Eclipsed Ra", "eclipsed-ra", 20000000, "Eclipsed Ra", 7, ["#ffe8a0", "#c86a00", "#0a0508"], "regal"],
+    ["Corrupted Blue Screen", "corrupted-blue-screen", 26000000, "Corrupted Blue Screen", 7, ["#ffffff", "#2a5aff", "#2a0030"], "regal glitch"],
+    ["Petrified Archangel", "petrified-archangel", 85000000, "Petrified Archangel", 7, ["#e8e8f0", "#7a8098", "#10121a"], "regal"],
+    ["Inverted Godhead", "inverted-godhead", 160000000, "Inverted Godhead", 7, ["#2a1a40", "#ffd8a0", "#ffffff"], "regal"],
+    ["Void Apotheosis", "void-apotheosis", 250000000, "Void Apotheosis", 7, ["#d8c8ff", "#6a3ae8", "#000000"], "regal prism"],
+    ["Caribbean Express", "caribbean-express", 32000000, "Caribbean Express", 7, ["#ffffff", "#20e8d0", "#ff8a3a"], "regal prism"],
+    ["Cursed Ringworld", "cursed-ringworld", 570000000, "Cursed Ringworld", 7, ["#ffd0a0", "#c03a10", "#120200"], "regal glitch"]
   ];
   var AURAS = RAW.map(function (r) {
     return { id: r[0].toLowerCase().replace(/[^a-z]+/g, "-"), name: r[0], e: r[1], n: r[2], rarity: r[3], lvl: r[4], c: r[5], fx: r[6] || "" };
@@ -2182,30 +2284,30 @@ window.CaribCine=(function(){
   var ROLL_ORDER = AURAS.slice().sort(function (a, b) { return b.n - a.n; });
 
   var SHOP = [
-    { id: "clover", name: "Four-Leaf Clover", e: "🍀", mult: 1.25, cost: 40, d: "A small edge on every roll." },
-    { id: "emerald", name: "Necklace of Emeralds", e: "📿", mult: 1.5, cost: 250, d: "Green stones that favor the bold." },
-    { id: "rabbit", name: "Rabbit's Foot", e: "🐇", mult: 2, cost: 1200, d: "Lucky for you, less so for the rabbit." },
-    { id: "horseshoe", name: "Golden Horseshoe", e: "🐎", mult: 2.5, cost: 6000, d: "Nailed above the door of every champion." },
-    { id: "dice", name: "Loaded Dice", e: "🎲", mult: 3, cost: 30000, d: "They almost always land your way." },
-    { id: "star", name: "Wishing Star", e: "🌠", mult: 5, cost: 120000, d: "Catch it before it falls." },
-    { id: "jackpot", name: "Jackpot Engine", e: "🎰", mult: 10, cost: 500000, d: "Three of a kind, forever." },
-    { id: "casino", name: "Casino Factory", e: "🏭", mult: 15, cost: 1000000, d: "An assembly line that manufactures jackpots around the clock." }
+    { id: "clover", name: "Four-Leaf Clover", e: "i-clover", mult: 1.25, cost: 40, d: "A small edge on every roll." },
+    { id: "emerald", name: "Necklace of Emeralds", e: "i-emerald", mult: 1.5, cost: 250, d: "Green stones that favor the bold." },
+    { id: "rabbit", name: "Rabbit's Foot", e: "i-rabbit", mult: 2, cost: 1200, d: "Lucky for you, less so for the rabbit." },
+    { id: "horseshoe", name: "Golden Horseshoe", e: "i-horseshoe", mult: 2.5, cost: 6000, d: "Nailed above the door of every champion." },
+    { id: "dice", name: "Loaded Dice", e: "i-dice", mult: 3, cost: 30000, d: "They almost always land your way." },
+    { id: "star", name: "Wishing Star", e: "i-star", mult: 5, cost: 120000, d: "Catch it before it falls." },
+    { id: "jackpot", name: "Jackpot Engine", e: "i-jackpot", mult: 10, cost: 500000, d: "Three of a kind, forever." },
+    { id: "casino", name: "Casino Factory", e: "i-casino", mult: 15, cost: 1000000, d: "An assembly line that manufactures jackpots around the clock." }
   ];
 
 
   // Gears: one-time purchases with non-luck perks. kind: cd (roll cooldown x), sell (sell value +), burst (extra rolls in the multi-roll), cheap (multi-roll cost x), pass (coins per roll)
   var GEARS = [
-    { id: "sandals", name: "Swift Sandals", e: "👟", kind: "cd", val: 0.9, cost: 1000, d: "Roll cooldown -10%." },
-    { id: "hourglass", name: "Sped-Up Hourglass", e: "⏳", kind: "cd", val: 0.85, cost: 8000, d: "Roll cooldown -15% more." },
-    { id: "chrono", name: "Chrono Gauntlet", e: "🥊", kind: "cd", val: 0.75, cost: 80000, d: "Roll cooldown -25% more." },
-    { id: "pouch", name: "Coin Pouch", e: "👛", kind: "sell", val: 0.1, cost: 1600, d: "Auras sell for 10% more." },
-    { id: "ledger", name: "Golden Ledger", e: "📒", kind: "sell", val: 0.25, cost: 16000, d: "Auras sell for 25% more." },
-    { id: "midas", name: "Midas Gauntlet", e: "🧤", kind: "sell", val: 0.5, cost: 160000, d: "Everything you touch sells for 50% more." },
-    { id: "coupon", name: "Bulk Coupon", e: "🎟️", kind: "cheap", val: 0.5, cost: 3000, d: "The multi-roll costs half as much." },
-    { id: "twin", name: "Twin Lens", e: "🔍", kind: "burst", val: 2, cost: 12000, d: "Multi-roll rolls 2 extra auras." },
-    { id: "prism", name: "Prism Lens", e: "🔭", kind: "burst", val: 3, cost: 140000, d: "Multi-roll rolls 3 more extra auras." },
-    { id: "piggy", name: "Piggy Bank", e: "🐷", kind: "pass", val: 2, cost: 5000, d: "Earn 🪙2 on every aura you roll." },
-    { id: "mint", name: "Mint Press", e: "🏦", kind: "pass", val: 25, cost: 300000, d: "Earn 🪙25 more on every aura you roll." }
+    { id: "sandals", name: "Swift Sandals", e: "i-sandals", kind: "cd", val: 0.9, cost: 1000, d: "Roll cooldown -10%." },
+    { id: "hourglass", name: "Sped-Up Hourglass", e: "i-hourglass", kind: "cd", val: 0.85, cost: 8000, d: "Roll cooldown -15% more." },
+    { id: "chrono", name: "Chrono Gauntlet", e: "i-chrono", kind: "cd", val: 0.75, cost: 80000, d: "Roll cooldown -25% more." },
+    { id: "pouch", name: "Coin Pouch", e: "i-pouch", kind: "sell", val: 0.1, cost: 1600, d: "Auras sell for 10% more." },
+    { id: "ledger", name: "Golden Ledger", e: "i-ledger", kind: "sell", val: 0.25, cost: 16000, d: "Auras sell for 25% more." },
+    { id: "midas", name: "Midas Gauntlet", e: "i-midas", kind: "sell", val: 0.5, cost: 160000, d: "Everything you touch sells for 50% more." },
+    { id: "coupon", name: "Bulk Coupon", e: "i-coupon", kind: "cheap", val: 0.5, cost: 3000, d: "The multi-roll costs half as much." },
+    { id: "twin", name: "Twin Lens", e: "i-twin", kind: "burst", val: 2, cost: 12000, d: "Multi-roll rolls 2 extra auras." },
+    { id: "prism", name: "Prism Lens", e: "i-prism", kind: "burst", val: 3, cost: 140000, d: "Multi-roll rolls 3 more extra auras." },
+    { id: "piggy", name: "Piggy Bank", e: "i-piggy", kind: "pass", val: 2, cost: 5000, d: "Earn \uE0002 on every aura you roll." },
+    { id: "mint", name: "Mint Press", e: "i-mint", kind: "pass", val: 25, cost: 300000, d: "Earn \uE00025 more on every aura you roll." }
   ];
   function gearTotal(kind, mode) {
     var v = mode === "mul" ? 1 : 0;
@@ -2343,7 +2445,7 @@ window.CaribCine=(function(){
     d.style.setProperty("--a2", a.c[1]);
     d.style.setProperty("--a3", a.c[2]);
     d.style.setProperty("--k", String(Math.min(2.2, 0.45 + a.lvl * 0.28)));
-    em.textContent = a.e;
+    em.appendChild(PX.el(a.e));
     d.appendChild(em);
     return d;
   }
@@ -2359,7 +2461,7 @@ window.CaribCine=(function(){
     slot.innerHTML = "";
     slot.appendChild(makeOrb(a));
     $("aname").textContent = a.name;
-    $("aodds").textContent = "1 in " + fmt(a.n) + " · sells for 🪙" + fmt(sellValue(a));
+    $("aodds").textContent = "1 in " + fmt(a.n) + " · sells for \uE000" + fmt(sellValue(a));
     var b = $("badges");
     b.innerHTML = "";
     var t = document.createElement("span");
@@ -2384,7 +2486,7 @@ window.CaribCine=(function(){
     AURAS.forEach(function (a) {
       if (state.found[a.id]) { found++; if (!rarest || a.n > rarest.n) rarest = a; }
     });
-    $("sCoins").textContent = "🪙 " + fmt(state.coins);
+    $("sCoins").textContent = "\uE000 " + fmt(state.coins);
     $("hdrCoins").textContent = fmt(state.coins);
     $("sLuck").textContent = fmtLuck(getLuck());
     $("sRolls").textContent = fmt(state.rolls);
@@ -2392,7 +2494,7 @@ window.CaribCine=(function(){
     $("sRarest").textContent = rarest ? "1/" + fmt(rarest.n) : "None";
     $("progress").style.width = (found / AURAS.length * 100) + "%";
     $("shopLuck").textContent = fmtLuck(getLuck());
-    $("shopCoins").textContent = "🪙 " + fmt(state.coins);
+    $("shopCoins").textContent = "\uE000 " + fmt(state.coins);
   }
 
   function renderRecent() {
@@ -2465,7 +2567,7 @@ window.CaribCine=(function(){
     t.el.classList.toggle("locked", !f);
     t.el.classList.toggle("sold", f && have === 0);
     setText(t.n, f ? a.name : "???");
-    setText(t.o, "1 in " + fmt(a.n) + (f ? " · 🪙" + fmt(sellValue(a)) + " each" : ""));
+    setText(t.o, "1 in " + fmt(a.n) + (f ? " · \uE000" + fmt(sellValue(a)) + " each" : ""));
     setHidden(t.q, !f);
     setText(t.q, "×" + have);
     setHidden(t.acts, have < 1);
@@ -2518,7 +2620,7 @@ window.CaribCine=(function(){
     var qty = mode === "all" ? have : 1;
     var gain = sellAura(a, qty);
     save();
-    say("Sold " + qty + " × " + a.name + " for 🪙" + fmt(gain) + ".");
+    say("Sold " + qty + " × " + a.name + " for \uE000" + fmt(gain) + ".");
     renderAll();
   }
 
@@ -2530,7 +2632,7 @@ window.CaribCine=(function(){
     });
     if (!count) { say("No duplicates to sell."); return; }
     save();
-    say("Sold " + fmt(count) + " duplicates for 🪙" + fmt(total) + ".");
+    say("Sold " + fmt(count) + " duplicates for \uE000" + fmt(total) + ".");
     renderAll();
   }
 
@@ -2539,7 +2641,7 @@ window.CaribCine=(function(){
   function buildRow(box, rows, s, tagText, onBuy) {
     var row = document.createElement("div");
     row.className = "item";
-    var ic = document.createElement("div"); ic.className = "ic"; ic.textContent = s.e;
+    var ic = document.createElement("div"); ic.className = "ic"; ic.appendChild(PX.el(s.e));
     var t = document.createElement("div"); t.className = "t";
     var nm = document.createElement("b"); nm.textContent = s.name;
     var mu = document.createElement("span"); mu.className = "mult"; mu.textContent = tagText;
@@ -2562,7 +2664,7 @@ window.CaribCine=(function(){
       var o = !!owned[s.id];
       r.row.classList.toggle("owned", o);
       if (o) { r.btn.textContent = "Owned"; r.btn.disabled = true; }
-      else { r.btn.textContent = "Buy 🪙 " + fmt(s.cost); r.btn.disabled = state.coins < s.cost; }
+      else { r.btn.textContent = "Buy \uE000 " + fmt(s.cost); r.btn.disabled = state.coins < s.cost; }
     });
   }
   function updateShop() {
@@ -2570,7 +2672,7 @@ window.CaribCine=(function(){
     paintRows(GEARS, gearRows, state.gear);
     $("gearCd").textContent = (getCooldown() / 1000).toFixed(2) + "s";
     $("gearSell").textContent = "+" + Math.round(gearTotal("sell") * 100) + "%";
-    $("gearPass").textContent = "🪙" + getPassive();
+    $("gearPass").textContent = "\uE000" + getPassive();
   }
   function buy(s) {
     if (state.shop[s.id] || state.coins < s.cost) return;
@@ -2606,7 +2708,7 @@ window.CaribCine=(function(){
       dot.className = "dot";
       dot.style.setProperty("--tc", "var(--t" + a.lvl + ")");
       td1.appendChild(dot);
-      td1.appendChild(document.createTextNode(a.e + " " + a.name + " · " + a.rarity));
+      td1.appendChild(PX.el(a.e)); td1.appendChild(document.createTextNode(" " + a.name + " · " + a.rarity));
       var td2 = document.createElement("td");
       td2.textContent = "1/" + fmt(a.n);
       tr.appendChild(td1); tr.appendChild(td2);
@@ -2963,7 +3065,7 @@ window.CaribCine=(function(){
   function ownedList() { return AURAS.filter(function (a) { return (state.inv[a.id] || 0) > 0; }).sort(function (x, y) { return y.n - x.n; }); }
 
   /* ---- Codes + luck boost timer ---- */
-  var CODES = { RELEASE: { boostMs: 120000, mult: 10, msg: "Code redeemed! 10× luck for 2 minutes." }, COINS: { coins: 10000, msg: "Code redeemed! +🪙10,000 coins." }, HAPPYHALLOWEEN: { aura: "skeletal", msg: "Happy Halloween! You got the Skeletal aura. ☠️" } };
+  var CODES = { RELEASE: { boostMs: 120000, mult: 10, msg: "Code redeemed! 10× luck for 2 minutes." }, COINS: { coins: 10000, msg: "Code redeemed! +\uE00010,000 coins." }, HAPPYHALLOWEEN: { aura: "skeletal", msg: "Happy Halloween! You got the Skeletal aura. \uE001" } };
   var lastCodeMsg = "";
   var boostTick = null;
   function fmtClock(ms) {
@@ -3030,7 +3132,7 @@ window.CaribCine=(function(){
   function codeReward(def) {
     var parts = [];
     if (def.boostMs) parts.push((def.mult || 10) + "× luck for " + Math.round(def.boostMs / 60000) + " min");
-    if (def.coins) parts.push("🪙" + def.coins.toLocaleString() + " coins");
+    if (def.coins) parts.push("\uE000" + def.coins.toLocaleString() + " coins");
     if (def.aura && BY_ID[def.aura]) parts.push(BY_ID[def.aura].name + " aura");
     return parts.join(" + ") || "Reward";
   }
@@ -3064,6 +3166,32 @@ window.CaribCine=(function(){
   $("logsRedeem").addEventListener("click", function () { closeLogs(); openCodes(); });
   $("logsModal").addEventListener("click", function (e) { if (e.target === $("logsModal")) closeLogs(); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !$("logsModal").hidden) closeLogs(); });
+  /* ---- Titles ---- */
+  var TITLES = [
+    { id: "admin", name: "Admin", icon: "shield", desc: "???", has: function () { return false; } },
+    { id: "malevolent", name: "Malevolent", icon: "malevolent", desc: "Get a Variant aura.", has: function () { return AURAS.some(function (a) { return a.v && state.found[a.id]; }); } }
+  ];
+  function openTitles() {
+    var list = $("titlesList");
+    list.textContent = "";
+    TITLES.forEach(function (t) {
+      var got = t.has();
+      var row = el("div", "trow " + (got ? "got" : "locked"));
+      row.appendChild(PX.el(t.icon, "big"));
+      var box = el("div", "");
+      box.appendChild(el("b", "", t.name));
+      box.appendChild(el("div", "tdesc", t.desc));
+      row.appendChild(box);
+      row.appendChild(el("span", "tstat " + (got ? "ok" : "no"), got ? "Earned" : "Locked"));
+      list.appendChild(row);
+    });
+    $("titlesModal").hidden = false;
+  }
+  function closeTitles() { $("titlesModal").hidden = true; }
+  $("titlesBtn").addEventListener("click", openTitles);
+  $("titlesClose").addEventListener("click", closeTitles);
+  $("titlesModal").addEventListener("click", function (e) { if (e.target === $("titlesModal")) closeTitles(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !$("titlesModal").hidden) closeTitles(); });
   startBoostTimer();
 
   var toastTimer = null;
